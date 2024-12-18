@@ -33,21 +33,21 @@
   bat
   thunderbird
   nautilus
-  curl
-  unzip
+  # curl
+  # unzip
   xorg.xauth
   zellij
   # docker
   foot
-  floorp
+  # floorp
   wofi
   # kanshi
   wl-clipboard
   # polkit_gnome
   # dunst
   distrobox
-  amdvlk
-  vulkan-tools
+  # amdvlk
+  # vulkan-tools
   vesktop
   pdfsam-basic
 
@@ -76,7 +76,7 @@
 
     # set some aliases, feel free to add more or remove some
     shellAliases = {
-      # .. = "cd ..";
+      .. = "cd ..";
     };
   };
 

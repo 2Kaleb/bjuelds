@@ -96,22 +96,12 @@ pipewire = {
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
   };
-printing ={
-enable=true;
-};
-avahi={
-  enable = true;
-  nssmdns4 = true;
-  openFirewall = true;
-};
 };
   # programs.xwayland.enable = true;
   programs.wayfire={
   enable=true;
   plugins= with pkgs.wayfirePlugins;[
-  # wcm
   wf-shell
-  # wayfire-plugins-extra
   ];
   };
 
@@ -142,9 +132,6 @@ avahi={
   enable = true;
   dockerCompat = true;
   };
-
-  # for Sea Islands (CIK i.e. GCN 2) cards
-  boot.kernelParams = [ "radeon.cik_support=0" "amdgpu.cik_support=1" ];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [22];

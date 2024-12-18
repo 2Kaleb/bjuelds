@@ -57,6 +57,7 @@ nixpkgs.hostPlatform = "x86_64-linux";
   wofi
   wl-clipboard
   baobab
+  gparted
   ];
 
 fonts.packages = with pkgs; [
@@ -77,7 +78,6 @@ environment.etc."current-system-packages".text =
 services.pipewire = {
     enable = true;
     alsa.enable = true;
-    # alsa.support32Bit = true;
     pulse.enable = true;
     wireplumber.enable = true;
     # If you want to use JACK applications, uncomment this
@@ -86,9 +86,7 @@ services.pipewire = {
   programs.wayfire={
   enable=true;
   plugins= with pkgs.wayfirePlugins;[
-  wcm
   wf-shell
-  # wayfire-plugins-extra
   ];
   };
 
