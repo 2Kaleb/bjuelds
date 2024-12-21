@@ -34,23 +34,29 @@
   thunderbird
   nautilus
   # curl
-  # unzip
-  xorg.xauth
+  zip unzip
   zellij
   # docker
   foot
-  # floorp
+  floorp
   wofi
   # kanshi
   wl-clipboard
   # polkit_gnome
   # dunst
-  distrobox
   # amdvlk
-  # vulkan-tools
+  vulkan-tools
   vesktop
   pdfsam-basic
-
+  mangohud  
+  vkbasalt
+  dolphin-emu
+  streamlink-twitch-gui-bin
+  qemu_kvm
+  quickemu
+  zotero
+  onlyoffice-desktopeditors
+  whatsapp-for-linux
   ];
 
   # basic configuration of git, please change to your own
@@ -76,9 +82,22 @@
 
     # set some aliases, feel free to add more or remove some
     shellAliases = {
-      .. = "cd ..";
+      # .. = "cd ..";
     };
   };
+
+  programs.obs-studio={
+  enable=true;
+  plugins= with pkgs.obs-studio-plugins; [
+  	  wlrobs
+	  obs-vkcapture
+	  input-overlay
+	  obs-multi-rtmp
+	  advanced-scene-switcher
+	  obs-pipewire-audio-capture
+  ];
+  };
+
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage

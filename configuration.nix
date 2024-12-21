@@ -68,7 +68,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-
+  distrobox
+  xorg.xauth
   ];
 
 fonts.packages = with pkgs; [
@@ -97,7 +98,7 @@ pipewire = {
     #jack.enable = true;
   };
 };
-  # programs.xwayland.enable = true;
+  programs.xwayland.enable = true;
   programs.wayfire={
   enable=true;
   plugins= with pkgs.wayfirePlugins;[
@@ -132,6 +133,11 @@ pipewire = {
   enable = true;
   dockerCompat = true;
   };
+programs.steam = {
+  enable = true;
+};
+programs.gamemode.enable =true;
+services.gvfs.enable=true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [22];

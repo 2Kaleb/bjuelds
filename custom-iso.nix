@@ -58,6 +58,7 @@ nixpkgs.hostPlatform = "x86_64-linux";
   wl-clipboard
   baobab
   gparted
+  czkawka
   ];
 
 fonts.packages = with pkgs; [
