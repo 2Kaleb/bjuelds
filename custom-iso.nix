@@ -33,32 +33,17 @@ nixpkgs.hostPlatform = "x86_64-linux";
   console.keyMap = "de";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.nixos = {
+  users.users.kdebre = {
     isNormalUser = true;
-    description = "nixos";
-    extraGroups = [ "wheel"];
+    description = "kdebre";
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [
   ];
   };
 
   environment.systemPackages = with pkgs; [
-  neovim
-  fastfetch
-  tldr
-  git  
-  htop
-  lazygit
-  starship
-  zoxide
-  bat
-  zellij
-  foot
-  floorp
-  wofi
-  wl-clipboard
-  baobab
-  gparted
-  czkawka
+    distrobox
+    xorg.xauth
   ];
 
 fonts.packages = with pkgs; [
@@ -91,11 +76,13 @@ services.pipewire = {
   ];
   };
 
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.blueman.enable = true;
+  security.pam.services.swaylock = {};
 
   system.stateVersion = "24.05"; # Did you read the comment?
 

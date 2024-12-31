@@ -13,6 +13,8 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.timeout=null;
+  boot.kernelParams = [ "radeon.cik_support=0" "amdgpu.cik_support=1" ];
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -42,13 +44,6 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
- # services.xserver.enable = true;
-  # Configure keymap in X11
-  # services.xserver.xkb= {
-  #   layout = "de";
-    # variant = "qwertz";
-  # };
-
   # Configure console keymap
   console.keyMap = "de";
 
@@ -56,6 +51,7 @@
   users.users.kdebre = {
     isNormalUser = true;
     description = "kdebre";
+    shell = pkgs.fish;
     extraGroups = [ "networkmanager" "wheel"];
     packages = with pkgs; [
   ];
@@ -70,46 +66,31 @@
   # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   distrobox
   xorg.xauth
+    lact
+    # lxqt.lxqt-policykit
   ];
+systemd.packages = with pkgs; [ lact ];
+systemd.services.lactd.wantedBy = ["multi-user.target"];
 
 fonts.packages = with pkgs; [
-  (nerdfonts.override { fonts = [ "DroidSansMono" ]; })
+    # nerdfonts
+  (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 ];
 
   environment.variables.EDITOR = "nvim";
 
-#Helpful Reddit Comment
-environment.etc."current-system-packages".text =
-  let
-    packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
-    sortedUnique = builtins.sort builtins.lessThan (pkgs.lib.lists.unique packages);
-    formatted = builtins.concatStringsSep "\n" sortedUnique;
-  in
-    formatted;
-
-services = {
-pipewire = {
-    enable = true;
-    alsa.enable = true;
-    # alsa.support32Bit = true;
-    pulse.enable = true;
-    wireplumber.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-  };
-};
-  programs.xwayland.enable = true;
   programs.wayfire={
   enable=true;
   plugins= with pkgs.wayfirePlugins;[
   wf-shell
   ];
   };
+  programs.fish.enable = true;
 
   hardware.graphics={
   enable = true;
   extraPackages = with pkgs;[
-  amdvlk	
+  amdvlk
   ];
   };
 
@@ -124,26 +105,63 @@ pipewire = {
   #   enableSSHSupport = true;
   # };
 
+  # programs.steam = {
+  #   enable = true;
+  # };
+  # programs.gamemode.enable =true;
   # List services that you want to enable:
+
+services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    # alsa.support32Bit = true;
+    pulse.enable = true;
+    wireplumber.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+    hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  services.blueman.enable= true;
 
-  virtualisation.podman = {
-  enable = true;
-  dockerCompat = true;
-  };
-programs.steam = {
-  enable = true;
-};
-programs.gamemode.enable =true;
+  security.pam.services.swaylock = {};
+
 services.gvfs.enable=true;
+
+  services.samba = {
+    enable = true;
+     openFirewall = true;
+    settings = {
+      global={
+        "map to guest" = "bad user";
+      };
+      "public" = {
+        "path" = "/mnt/Shares/Public";
+        "read only" = "yes";
+        "browseable" = "yes";
+        "guest ok" = "yes";
+        "comment" = "Public samba share.";
+      };
+    };
+  };
+  #Whether to enable Web Services Dynamic Discovery host daemon. This enables (Samba) hosts, like your local NAS device, to be found by Web Service Discovery Clients like Windows .
+  services.samba-wsdd = {
+  enable = true;
+  openFirewall = true;
+};
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [22];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+  networking.firewall = rec {
+  allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+  allowedUDPPortRanges = allowedTCPPortRanges;
+};
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
