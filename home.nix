@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs,pkgs-unstable, ... }:
 
 {
   # TODO please change the username & home directory to your own
@@ -24,15 +24,18 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
     zoom-us
   vulkan-tools
   streamlink-twitch-gui-bin
+  google-drive-ocamlfuse
   # vkbasalt
   # dolphin-emu
   # qemu_kvm
   # quickemu
   radeontop
-  gparted baobab czkawka
+  gparted baobab czkawka 
   strawberry
     xorg.xeyes
+    pkgs-unstable.ghostty
   ];
+
 
   # basic configuration of git, please change to your own
   programs =
@@ -136,6 +139,7 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
           highlight_base_name=1;
           color_scheme=6;
           hide_userland_threads=1;
+          show_program_path=0;
         }// (with config.lib.htop; leftMeters [
   (bar "CPU")
   (bar "AllCPUs2")

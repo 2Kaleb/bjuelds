@@ -110,6 +110,7 @@ fonts.packages = with pkgs; [
   # };
   # programs.gamemode.enable =true;
   # List services that you want to enable:
+  programs.gnome-disks.enable=true;
 
 services.pipewire = {
     enable = true;
