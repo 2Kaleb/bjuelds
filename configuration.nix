@@ -13,10 +13,24 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.timeout=null;
-  boot.kernelParams = [ "radeon.cik_support=0" "amdgpu.cik_support=1" ];
+  boot.loader.timeout = null;
+  boot.plymouth.enable= true;
+# Enable "Silent Boot"
+  boot={
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+    ];
+  };
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "my-nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -52,20 +66,39 @@
     isNormalUser = true;
     description = "kdebre";
     shell = pkgs.fish;
-    extraGroups = [ "networkmanager" "wheel"];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd"];
     packages = with pkgs; [
   ];
   };
+  virtualisation={
+    libvirtd = {
+        enable = true;
+        qemu = {
+          package = pkgs.qemu_kvm;
+          runAsRoot = true;
+          swtpm.enable = true;
+          ovmf = {
+            enable = true;
+            packages = [(pkgs.OVMF.override {
+              secureBoot = true;
+              tpmSupport = true;
+            }).fd];
+          };
+  };
+};
+    containers.enable=true;
+    podman.enable=true;
+    oci-containers.containers={
+    };
+
+  };
+  programs.virt-manager.enable=true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-  # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  distrobox
-  xorg.xauth
+  # xorg.xauth
     lact
     # lxqt.lxqt-policykit
   ];
@@ -78,7 +111,6 @@ fonts.packages = with pkgs; [
 ];
 
   environment.variables.EDITOR = "nvim";
-
   programs.wayfire={
   enable=true;
   plugins= with pkgs.wayfirePlugins;[
@@ -105,18 +137,47 @@ fonts.packages = with pkgs; [
   #   enableSSHSupport = true;
   # };
 
-  # programs.steam = {
-  #   enable = true;
-  # };
-  # programs.gamemode.enable =true;
-  # List services that you want to enable:
+  programs.steam = {
+    enable = true;
+    protontricks.enable=true;
+    package=pkgs.steam.override {
+      extraEnv = {
+        MANGOHUD = true;
+        OBS_VKCAPTURE = true;
+        ENABLE_VKBASALT = true;
+      };
+  };
+  extraCompatPackages=with pkgs;[
+      proton-ge-bin
+        steamtinkerlaunch
+  ];
+  extraPackages=with pkgs;[
+      gamescope
+      # protonup-qt
+  ];
+  };
+  programs.gamemode.enable =true;
+  #/usr/bin/gamescope -e -- /usr/bin/steam -tenfoot
+  programs.gamescope={
+  enable =true;
+  args=[
+  "--rt"
+  "--expose-wayland"
+  "-W 1920 -H 1080"
+  "-r 144"
+  # "--mangoapp"
+  "--adaptive-sync"
+  "-f"
+  ];
+  };
   programs.gnome-disks.enable=true;
+  # List services that you want to enable:
 
 services.pipewire = {
     enable = true;
-    alsa.enable = true;
+    # alsa.enable = true;
     # alsa.support32Bit = true;
-    pulse.enable = true;
+    # pulse.enable = true;
     wireplumber.enable = true;
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
@@ -124,7 +185,7 @@ services.pipewire = {
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-    hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable= true;
 
@@ -140,7 +201,7 @@ services.gvfs.enable=true;
         "map to guest" = "bad user";
       };
       "public" = {
-        "path" = "/mnt/Shares/Public";
+        "path" = "/mnt/public";
         "read only" = "yes";
         "browseable" = "yes";
         "guest ok" = "yes";
@@ -154,11 +215,51 @@ services.gvfs.enable=true;
   openFirewall = true;
 };
 
+services ={
+sonarr = {
+  enable = true;
+  openFirewall = true;
+};
+bazarr = {
+  enable = true;
+  openFirewall = true;
+};
+lidarr = {
+  enable = true;
+  openFirewall = true;
+};
+prowlarr = {
+  enable = true;
+  openFirewall = true;
+};
+radarr = {
+  enable = true;
+  openFirewall = true;
+};
+readarr = {
+  enable = true;
+  openFirewall = true;
+};
+jellyfin = {
+  enable = true;
+  openFirewall = true;
+};
+jellyseerr = {
+  enable = true;
+  openFirewall = true;
+};
+sabnzbd = {
+  enable = true;
+  openFirewall = true;
+};
+};
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [22];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+  #kdeconnect
   networking.firewall = rec {
   allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
   allowedUDPPortRanges = allowedTCPPortRanges;

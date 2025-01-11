@@ -1,7 +1,6 @@
 { config, pkgs,pkgs-unstable, ... }:
 
 {
-  # TODO please change the username & home directory to your own
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
   home.sessionPath = [
@@ -17,23 +16,25 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
 
   # Packages that should be installed to the user profile.
   home.packages = with pkgs; [
-  zip unzip curl wget zig 
+  # zip unzip curl wget zig python3 cargo julia binutils
   slurp grim wl-clipboard
   nautilus vesktop pdfsam-basic zotero onlyoffice-desktopeditors whatsapp-for-linux gimp
     thunderbird
     zoom-us
-  vulkan-tools
+  vulkan-tools libva-utils
   streamlink-twitch-gui-bin
   google-drive-ocamlfuse
+  davinci-resolve
+  distrobox
   # vkbasalt
   # dolphin-emu
   # qemu_kvm
   # quickemu
-  radeontop
+  # radeontop
+  nvtopPackages.amd amdgpu_top
   gparted baobab czkawka 
   strawberry
     xorg.xeyes
-    pkgs-unstable.ghostty
   ];
 
 
@@ -58,6 +59,14 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
       broot={
         enable=true;
         enableFishIntegration=true;
+      };
+      ghostty={
+        enable=true;
+        enableFishIntegration=true;
+        settings=
+        {
+        background-opacity=0.5;
+        };
       };
       btop.enable=true;
       cava.enable=true;
@@ -203,17 +212,18 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
         };
       };
 
-  # obs-studio={
-  # enable=true;
-  # plugins= with pkgs.obs-studio-plugins; [
-  # 	  wlrobs
-  #  obs-vkcapture
-  #  input-overlay
-  #  obs-multi-rtmp
-  #  advanced-scene-switcher
-  #  obs-pipewire-audio-capture
-  # ];
-  # };
+  obs-studio={
+  enable=true;
+  plugins= with pkgs.obs-studio-plugins; [
+  wlrobs
+   obs-vkcapture
+   input-overlay
+   obs-multi-rtmp
+   advanced-scene-switcher
+   obs-pipewire-audio-capture
+   # obs-gstreamer
+  ];
+  };
 
 
   };
