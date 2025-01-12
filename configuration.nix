@@ -14,7 +14,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = null;
-  boot.plymouth.enable= true;
+  boot.plymouth={
+    enable= true;
+    theme = "breeze";
+  };
 # Enable "Silent Boot"
   boot={
     consoleLogLevel = 0;
@@ -100,6 +103,7 @@
   environment.systemPackages = with pkgs; [
   # xorg.xauth
     lact
+    nixos-icons
     # lxqt.lxqt-policykit
   ];
 systemd.packages = with pkgs; [ lact ];

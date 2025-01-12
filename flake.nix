@@ -8,14 +8,14 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   };
 
-  outputs = inputs@{ self,nixpkgs,nixpkgs-unstable,home-manager }: {
+  outputs = inputs@{ self,nixpkgs,home-manager }: {
     nixosConfigurations ={
 
-    my-nixos = nixpkgs.lib.nixosSystem rec {
+    my-nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
           {
@@ -33,12 +33,12 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = {
-              pkgs-unstable = import nixpkgs-unstable {
-                inherit system;
-                config.allowUnfree = true;
-              };
-            };
+        # home-manager.extraSpecialArgs = {
+        #       pkgs-unstable = import nixpkgs-unstable {
+        #         inherit system;
+        #         config.allowUnfree = true;
+        #       };
+        #     };
         home-manager.users.kdebre = import ./home.nix;
          }
       ];

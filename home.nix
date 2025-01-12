@@ -1,4 +1,4 @@
-{ config, pkgs,pkgs-unstable, ... }:
+{ config, pkgs, ... }:
 
 {
   home.username = "kdebre";
@@ -18,11 +18,12 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   home.packages = with pkgs; [
   # zip unzip curl wget zig python3 cargo julia binutils
   slurp grim wl-clipboard
-  nautilus vesktop pdfsam-basic zotero onlyoffice-desktopeditors whatsapp-for-linux gimp
+  nautilus vesktop 
+    pdfsam-basic zotero # onlyoffice-desktopeditors zoom-us
+    whatsapp-for-linux gimp
     thunderbird
-    zoom-us
   vulkan-tools libva-utils
-  streamlink-twitch-gui-bin
+  # streamlink-twitch-gui-bin
   google-drive-ocamlfuse
   davinci-resolve
   distrobox
