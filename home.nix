@@ -150,6 +150,10 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
           color_scheme=6;
           hide_userland_threads=1;
           show_program_path=0;
+          show_cpu_frequency=1;
+          show_cpu_temperature=1;
+          sort_key=39;
+          sort_direction=-1;
         }// (with config.lib.htop; leftMeters [
   (bar "CPU")
   (bar "AllCPUs2")
