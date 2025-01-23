@@ -23,9 +23,10 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
     whatsapp-for-linux gimp
     thunderbird
   vulkan-tools libva-utils
-  # streamlink-twitch-gui-bin
+  streamlink-twitch-gui-bin streamlink chatterino2
   google-drive-ocamlfuse
   davinci-resolve
+    onlyoffice-desktopeditors
   distrobox
   # vkbasalt
   # dolphin-emu
