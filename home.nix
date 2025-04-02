@@ -18,15 +18,19 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   home.packages = with pkgs; [
   # zip unzip curl wget zig python3 cargo julia binutils
   slurp grim wl-clipboard
-  nautilus vesktop 
-    pdfsam-basic zotero # onlyoffice-desktopeditors zoom-us
+  nautilus
+    vesktop 
+    pdfsam-basic zotero
+    # zoom-us
     whatsapp-for-linux gimp
     thunderbird
   vulkan-tools libva-utils
   streamlink-twitch-gui-bin streamlink chatterino2
+  rsshub
+    vlc
   google-drive-ocamlfuse
-  davinci-resolve
     onlyoffice-desktopeditors
+  # davinci-resolve
   distrobox
   # vkbasalt
   # dolphin-emu
@@ -35,7 +39,6 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   # radeontop
   nvtopPackages.amd amdgpu_top
   gparted baobab czkawka 
-  strawberry
     xorg.xeyes
   ];
 
@@ -48,35 +51,18 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
     userName = "Kaleb Debre";
     userEmail = "kalebdebre@web.de";
     };
-      wofi.enable=true;
-      kitty.enable=true;
-      alacritty.enable=true;
+      swaylock={
+        enable=true;
+        settings={
+        image = "/etc/nixos/wayfire/wallpaper/windows10.jpg";
+      };
+      };
       neovim={
         enable=true;
         defaultEditor=true;
       };
       bat.enable=true;
-      ripgrep.enable=true;
       bottom.enable=true;
-      broot={
-        enable=true;
-        enableFishIntegration=true;
-      };
-      ghostty={
-        enable=true;
-        enableFishIntegration=true;
-        settings=
-        {
-        background-opacity=0.5;
-        };
-      };
-      btop.enable=true;
-      cava.enable=true;
-      carapace={
-        enable=true;
-        enableFishIntegration=true;
-      };
-      eza.enable=true;
       fastfetch={
         enable=true;
         settings={
@@ -132,6 +118,7 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
       };
       foot={
         enable=true;
+        server.enable=false;
         settings={
       main.font="JetBrainsMonoNFM-Regular:size=10";
       colors.alpha=0.5;
@@ -139,7 +126,6 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
       };
       freetube.enable=true;
       fuzzel.enable=true;
-      gitui.enable=true;
       gpg.enable = true;
       htop = {
         enable = true;
@@ -173,38 +159,12 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
         enable = true;
         enableSessionWide=true;
       };
-      mcfly = {
-        enable = true;
-        enableFishIntegration=true;
-      };
       mpv.enable=true;
-      lsd={
-      enable=true;
-        enableAliases=true;
-      };
-      qutebrowser.enable=true;
       sioyek.enable=true;
-      swaylock.enable=true;
-      sagemath.enable=true;
       tealdeer.enable = true;
-      # texlive={
-      # enable = true;
-      # packageSet=pkgs.texlive.combine.scheme-basic;
-      # };
-      # thunderbird = {
-      #   enable = true;
-      # };
-      wezterm.enable = true;
-      yazi = {
-        enable = true;
-        enableFishIntegration=true;
-      };
-      starship = {
-        enable = true;
-        enableFishIntegration=true;
-      };
+      yazi.       enable = true;
       yt-dlp.enable = true;
-      zed-editor.enable = true;
+      # zed-editor.enable = true;
       zellij.enable = true;
       zoxide = {
         enable = true;
@@ -218,30 +178,16 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
         };
       };
 
-  obs-studio={
-  enable=true;
-  plugins= with pkgs.obs-studio-plugins; [
-  wlrobs
-   obs-vkcapture
-   input-overlay
-   obs-multi-rtmp
-   advanced-scene-switcher
-   obs-pipewire-audio-capture
-   # obs-gstreamer
-  ];
-  };
-
-
   };
 
   services= {
     podman.enable=true;
-    network-manager-applet.enable=true;
+    # network-manager-applet.enable=true;
     mako.enable=true;
-    kdeconnect.enable=true;
+    # kdeconnect.enable=true;
     # kanshi.enable=true;
     # glance.enable=true;
-  syncthing.enable=true;
+  # syncthing.enable=true;
   };
 
 

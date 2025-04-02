@@ -2,38 +2,33 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config,lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = null;
-  boot.plymouth={
-    enable= true;
-    theme = "breeze";
-  };
-# Enable "Silent Boot"
-  boot={
-    consoleLogLevel = 0;
-    initrd.verbose = false;
-    kernelParams = [
-      "quiet"
-      "splash"
-      "boot.shell_on_fail"
-      "loglevel=3"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
-    ];
-  };
+  # boot.plymouth={
+  #   enable= true;
+  #   theme = "breeze";
+  # };
+  # boot={
+  #   consoleLogLevel = 0;
+  #   initrd.verbose = false;
+  #   kernelParams = [
+  #     "quiet"
+  #     "splash"
+  #     "boot.shell_on_fail"
+  #     "loglevel=3"
+  #     "rd.systemd.show_status=false"
+  #     "rd.udev.log_level=3"
+  #     "udev.log_priority=3"
+  #   ];
+  # };
 
-  networking.hostName = "my-nixos"; # Define your hostname.
+  networking.hostName = "biostar-a68n-5000"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -69,33 +64,17 @@
     isNormalUser = true;
     description = "kdebre";
     shell = pkgs.fish;
-    extraGroups = [ "networkmanager" "wheel" "libvirtd"];
+    extraGroups = [ "networkmanager" "wheel" "seat"];
     packages = with pkgs; [
   ];
   };
-  virtualisation={
-    libvirtd = {
-        enable = true;
-        qemu = {
-          package = pkgs.qemu_kvm;
-          runAsRoot = true;
-          swtpm.enable = true;
-          ovmf = {
-            enable = true;
-            packages = [(pkgs.OVMF.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd];
-          };
-  };
-};
+  virtualisation ={
     containers.enable=true;
     podman.enable=true;
     oci-containers.containers={
     };
-
   };
-  programs.virt-manager.enable=true;
+
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -103,7 +82,6 @@
   environment.systemPackages = with pkgs; [
   # xorg.xauth
     lact
-    nixos-icons
     # lxqt.lxqt-policykit
   ];
 systemd.packages = with pkgs; [ lact ];
@@ -114,11 +92,12 @@ fonts.packages = with pkgs; [
   (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
 ];
 
-  environment.variables.EDITOR = "nvim";
+  # environment.variables.EDITOR = "nvim";
   programs.wayfire={
   enable=true;
   plugins= with pkgs.wayfirePlugins;[
   wf-shell
+      wcm
   ];
   };
   programs.fish.enable = true;
@@ -126,7 +105,6 @@ fonts.packages = with pkgs; [
   hardware.graphics={
   enable = true;
   extraPackages = with pkgs;[
-  amdvlk
   ];
   };
 
@@ -142,7 +120,7 @@ fonts.packages = with pkgs; [
   # };
 
   programs.steam = {
-    enable = true;
+    enable = false;
     protontricks.enable=true;
     package=pkgs.steam.override {
       extraEnv = {
@@ -160,10 +138,10 @@ fonts.packages = with pkgs; [
       # protonup-qt
   ];
   };
-  programs.gamemode.enable =true;
+  programs.gamemode.enable =false;
   #/usr/bin/gamescope -e -- /usr/bin/steam -tenfoot
   programs.gamescope={
-  enable =true;
+  enable =false;
   args=[
   "--rt"
   "--expose-wayland"
@@ -189,13 +167,15 @@ services.pipewire = {
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  hardware.bluetooth.enable = true; # enables support for Bluetooth
-  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
-  services.blueman.enable= true;
-
   security.pam.services.swaylock = {};
-
 services.gvfs.enable=true;
+  services.printing.enable=true;
+  services.avahi = {
+  enable = true;
+  nssmdns4 = true;
+  openFirewall = true;
+};
+
 
   services.samba = {
     enable = true;
@@ -219,55 +199,91 @@ services.gvfs.enable=true;
   openFirewall = true;
 };
 
-services ={
-sonarr = {
-  enable = true;
-  openFirewall = true;
-};
-bazarr = {
-  enable = true;
-  openFirewall = true;
-};
-lidarr = {
-  enable = true;
-  openFirewall = true;
-};
-prowlarr = {
-  enable = true;
-  openFirewall = true;
-};
-radarr = {
-  enable = true;
-  openFirewall = true;
-};
-readarr = {
-  enable = true;
-  openFirewall = true;
-};
-jellyfin = {
-  enable = true;
-  openFirewall = true;
-};
-jellyseerr = {
-  enable = true;
-  openFirewall = true;
-};
-sabnzbd = {
-  enable = true;
-  openFirewall = true;
-};
-};
+# services ={
+# sonarr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# bazarr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# lidarr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# prowlarr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# radarr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# readarr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# jellyfin = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# jellyseerr = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# sabnzbd = {
+#   enable = true;
+#   openFirewall = true;
+# };
+# };
 
+ # services.invidious.enable=true;
+ services.seatd.enable=true;
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [22];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-  #kdeconnect
-  networking.firewall = rec {
-  allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
-  allowedUDPPortRanges = allowedTCPPortRanges;
-};
+
+
+  #hardware-configuration.nix
+  imports =
+    [ (modulesPath + "/installer/scan/not-detected.nix")
+    ];
+
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "ohci_pci" "ehci_pci" "usb_storage" "usbhid" "sd_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
+  boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = [ "ntfs" ];
+  boot.kernelParams = [ "radeon.cik_support=0" "amdgpu.cik_support=1" ];
+
+  fileSystems."/" =
+    { device = "/dev/disk/by-uuid/638d8adf-f7b5-4e70-88b3-bf3831c59a8c";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/7C08-6DB2";
+      fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
+    };
+
+   swapDevices = [ {
+    device = "/var/lib/swapfile";
+    size = 8*1024;
+  } ];
+
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  # (the default) this is the recommended approach. When using systemd-networkd it's
+  # still possible to use this option, but it's recommended to use it in conjunction
+  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

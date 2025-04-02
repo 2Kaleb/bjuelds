@@ -15,31 +15,15 @@
   outputs = inputs@{ self,nixpkgs,home-manager }: {
     nixosConfigurations ={
 
-    my-nixos = nixpkgs.lib.nixosSystem {
+    biostar-a68n-5000 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-          {
-              # Allow insecure package because we have no other solution
-              # Can be removed after https://github.com/NixOS/nixpkgs/issues/360592 is closed
-              nixpkgs.config.permittedInsecurePackages = [
-                 "aspnetcore-runtime-6.0.36"
-    "aspnetcore-runtime-wrapped-6.0.36"
-    "dotnet-sdk-6.0.428"
-    "dotnet-sdk-wrapped-6.0.428"
-              ];
-            }
-        ./configuration.nix
+        ./hosts/biostar-a68n-5000.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-        # home-manager.extraSpecialArgs = {
-        #       pkgs-unstable = import nixpkgs-unstable {
-        #         inherit system;
-        #         config.allowUnfree = true;
-        #       };
-        #     };
-        home-manager.users.kdebre = import ./home.nix;
+            home-manager.users.kdebre = import ./home.nix;
          }
       ];
     };
@@ -57,9 +41,6 @@
           }
       ];
     };
-
-
-
   };
 };
 }
