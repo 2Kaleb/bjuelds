@@ -29,6 +29,8 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   rsshub
     vlc
   google-drive-ocamlfuse
+  # google-drive-ocamlfuse
+  # davinci-resolve
     onlyoffice-desktopeditors
   # davinci-resolve
   distrobox
@@ -37,9 +39,10 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   # qemu_kvm
   # quickemu
   # radeontop
-  nvtopPackages.amd amdgpu_top
+  # nvtopPackages.amd amdgpu_top
   gparted baobab czkawka 
     xorg.xeyes
+    # qbitorrent
   ];
 
 
@@ -120,7 +123,7 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
         enable=true;
         server.enable=false;
         settings={
-      main.font="JetBrainsMonoNFM-Regular:size=10";
+      main.font="JetBrainsMonoNFM-Regular:size=14";
       colors.alpha=0.5;
         };
       };
@@ -157,7 +160,10 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
       lazygit.enable = true;
       mangohud = {
         enable = true;
-        enableSessionWide=true;
+        # enableSessionWide=true;
+        settings={
+            full = true;
+      };
       };
       mpv.enable=true;
       sioyek.enable=true;
@@ -183,6 +189,8 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   services= {
     podman.enable=true;
     # network-manager-applet.enable=true;
+    # podman.enable=true;
+    network-manager-applet.enable=true;
     mako.enable=true;
     # kdeconnect.enable=true;
     # kanshi.enable=true;
