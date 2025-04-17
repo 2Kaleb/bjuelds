@@ -1,6 +1,7 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs,pkgs-unstable, ... }:
 {
+
+
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
   home.sessionPath = [
@@ -9,6 +10,7 @@
   home.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
+
 
   # link the configuration file in current directory to the specified location in home directory
 home.file.".config/wayfire.ini".source = ./wayfire/wayfire.ini;
@@ -21,28 +23,23 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
   nautilus
     vesktop 
     pdfsam-basic zotero
-    # zoom-us
+    pkgs-unstable.zoom-us
     whatsapp-for-linux gimp
-    thunderbird
   vulkan-tools libva-utils
   streamlink-twitch-gui-bin streamlink chatterino2
   rsshub
     vlc
-  google-drive-ocamlfuse
-  # google-drive-ocamlfuse
-  # davinci-resolve
-    onlyoffice-desktopeditors
-  # davinci-resolve
+    onlyoffice-desktopeditors libreoffice
   distrobox
-  # vkbasalt
-  # dolphin-emu
-  # qemu_kvm
-  # quickemu
-  # radeontop
-  # nvtopPackages.amd amdgpu_top
   gparted baobab czkawka 
     xorg.xeyes
-    # qbitorrent
+    networkmanagerapplet
+qimgv
+    thunderbird
+    wlsunset wlogout wlr-randr
+    pympress
+    brightnessctl
+    cifs-utils
   ];
 
 
@@ -54,6 +51,16 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
     userName = "Kaleb Debre";
     userEmail = "kalebdebre@web.de";
     };
+# thunderbird={
+# enable=true;
+#         profiles.kdebre={
+#     settings={
+#   "pdfjs.spreadModeOnLoad"=true;
+#   "browser.bookmarks.openInTabClosesMenu"=false;
+#    "browser.sessionstore.resume_from_crash"= false;
+#   };
+#       };
+# };
       swaylock={
         enable=true;
         settings={
@@ -110,6 +117,7 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
             type= "physicaldisk";
             temp= true;
         }
+	"battery"
          "localip"
         "break"
         "colors"
@@ -118,15 +126,34 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
       };
       floorp={
         enable=true;
+          # profiles.kdebre.settings={
+          # "pdfjs.spreadModeOnLoad"=true;
+          # "browser.bookmarks.openInTabClosesMenu"=false;
+          #  "browser.sessionstore.resume_from_crash"= false;
+          # };
       };
-      foot={
+
+      wezterm.enable=true;
+      kitty.enable=true;
+      alacritty.enable=true;
+      ghostty.enable=true;
+      foot=  let
+  foot-theme=pkgs.fetchurl{
+    url=    "https://codeberg.org/dnkl/foot/raw/branch/master/themes/kitty";
+    hash= "sha256-V0m8tmR4QFRWe//ltX++ojD5X+x2x3cRHaKWfnL8OH8=";
+        };
+    in        {
         enable=true;
         server.enable=false;
         settings={
-      main.font="JetBrainsMonoNFM-Regular:size=14";
+      main={
+          font="JetBrainsMonoNFM-Regular:size=14";
+        include = "${foot-theme}";
+          };
       colors.alpha=0.5;
-        };
+    };
       };
+
       freetube.enable=true;
       fuzzel.enable=true;
       gpg.enable = true;
@@ -166,9 +193,12 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
       };
       };
       mpv.enable=true;
-      sioyek.enable=true;
+      sioyek={
+      enable=true;
+      package=pkgs-unstable.sioyek;
+      };
       tealdeer.enable = true;
-      yazi.       enable = true;
+      yazi.enable = true;
       yt-dlp.enable = true;
       # zed-editor.enable = true;
       zellij.enable = true;
@@ -188,9 +218,6 @@ home.file.".config/wf-shell.ini".source = ./wayfire/wf-shell.ini;
 
   services= {
     podman.enable=true;
-    # network-manager-applet.enable=true;
-    # podman.enable=true;
-    network-manager-applet.enable=true;
     mako.enable=true;
     # kdeconnect.enable=true;
     # kanshi.enable=true;

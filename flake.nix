@@ -9,12 +9,31 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   };
 
-  outputs = inputs@{ self,nixpkgs,home-manager,nixos-hardware }: {
+  outputs = inputs@{ self,nixpkgs,nixpkgs-unstable,home-manager,nixos-hardware }: {
     nixosConfigurations ={
+
+    thinkbook = nixpkgs.lib.nixosSystem rec {
+      system = "x86_64-linux";
+      modules = [
+        ./hosts/thinkbook.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.kdebre = import ./home.nix;
+            home-manager.extraSpecialArgs={
+              pkgs-unstable= import nixpkgs-unstable {
+               config.allowUnfree = true;
+              inherit system;
+            };
+         };
+          }
+      ];
+    };
 
     biostar-a68n-5000 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -28,6 +47,7 @@
          }
       ];
     };
+
 
     gigabyte-a620i = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
