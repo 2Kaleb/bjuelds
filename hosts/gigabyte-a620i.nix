@@ -5,35 +5,6 @@
 { config,lib, pkgs, ... }:
 
 {
-  # imports =
-  #   [ # Include the results of the hardware scan.
-  #     ./hardware-configuration.nix
-  #   ];
-
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.timeout = null;
-  # boot.plymouth={
-  #   enable= true;
-  #   theme = "breeze";
-  # };
-# Enable "Silent Boot"
-  boot={
-  #   consoleLogLevel = 0;
-  #   initrd.verbose = false;
-    kernelParams = [
-        "video=DP-1:2560x1440@143.856003"
-  "video=HDMI-A-1:1920x1080@60"
-  #     "quiet"
-  #     "splash"
-  #     "boot.shell_on_fail"
-  #     "loglevel=3"
-  #     "rd.systemd.show_status=false"
-  #     "rd.udev.log_level=3"
-  #     "udev.log_priority=3"
-    ];
-  };
 
   networking.hostName = "gigabyte-a620i"; # Define your hostname.
 
@@ -43,6 +14,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.firewall.allowedUDPPorts = [ 4242];
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
@@ -72,33 +44,81 @@
     shell = pkgs.fish;
     extraGroups = [ "networkmanager" "wheel" "libvirtd" "seat"];
     packages = with pkgs; [
+      lan-mouse
   ];
   };
-  virtualisation ={
-    containers.enable=true;
-    podman.enable=true;
-    oci-containers.containers={
-    };
-  };
-
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  services.blueman.enable = true;
+
 
   environment.systemPackages = with pkgs; [
-  # xorg.xauth
     lact
-    nixos-icons
-    davinci-resolve
-    # lxqt.lxqt-policykit
+  lxqt.lxqt-policykit
   ];
-systemd.packages = with pkgs; [ lact ];
-systemd.services.lactd.wantedBy = ["multi-user.target"];
+
+  programs.virt-manager.enable=true;
+  virtualisation.libvirtd = {
+  enable = true;
+  qemu = {
+    package = pkgs.qemu_kvm;
+    # runAsRoot = true;
+    # swtpm.enable = true;
+    # ovmf = {
+    #   enable = true;
+    #   packages = [(pkgs.OVMF.override {
+    #     secureBoot = true;
+    #     tpmSupport = true;
+    #   }).fd];
+    # };
+  };
+};
+  xdg={
+    portal={
+      enable=true;
+      # wlr.enable=true;
+      extraPortals=[
+        pkgs.xdg-desktop-portal-wlr
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.gnome-keyring
+      ];
+      config={
+        common = {
+    default = [
+      "gtk"
+    ];
+    "org.freedesktop.impl.portal.Secret" = [
+      "gnome-keyring"
+    ];
+          "org.freedesktop.impl.portal.Screenshot"=[
+            "wlr"
+        ];
+          "org.freedesktop.impl.portal.ScreenCast"=[
+            "wlr"
+        ];
+  };
+      };
+    };
+    terminal-exec={
+    enable=true;
+    settings={
+      default=[
+        "foot.desktop"
+    ];
+    };
+    };
+  };
+  #   containers.enable=true;
+    # podman.enable=true;
+    # oci-containers.containers={
+    # };
 
 fonts.packages = with pkgs; [
     # nerdfonts
-  (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  nerd-fonts.jetbrains-mono
 ];
 
   # environment.variables.EDITOR = "nvim";
@@ -110,28 +130,10 @@ fonts.packages = with pkgs; [
   ];
   };
   programs.fish.enable = true;
-
-  hardware.graphics={
-  enable = true;
-    enable32Bit=true;
-  extraPackages = with pkgs;[
-  # amdvlk < radv
-  ];
-  };
-
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  programs.gnome-disks.enable=true;
 
   programs.steam = {
-    enable = false;
+    enable = true;
     protontricks.enable=true;
     package=pkgs.steam.override {
       extraEnv = {
@@ -141,17 +143,18 @@ fonts.packages = with pkgs; [
       };
   };
   extraCompatPackages=with pkgs;[
+      proton-ge-bin
         steamtinkerlaunch
   ];
   extraPackages=with pkgs;[
       gamescope
-      # protonup-qt
+      # protonup-qt doesnt't build
   ];
   };
-  programs.gamemode.enable =false;
+  programs.gamemode.enable =true;
   #/usr/bin/gamescope -e -- /usr/bin/steam -tenfoot
   programs.gamescope={
-  enable =false;
+  enable =true;
   args=[
   "--rt"
   "--expose-wayland"
@@ -162,31 +165,28 @@ fonts.packages = with pkgs; [
   "-f"
   ];
   };
-  programs.gnome-disks.enable=true;
+systemd.packages = with pkgs; [ lact ];
+systemd.services.lactd.wantedBy = ["multi-user.target"];
+programs.corectrl.enable=true;
+  programs.kdeconnect.enable=true;
+  programs.coolercontrol.enable=true;
+
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+
+
+
   # List services that you want to enable:
   services.seatd.enable=true;
+  services.hardware.openrgb.enable=true;
+  services.openssh.enable = true;
+  security.pam.services.swaylock = {};
+  security.polkit.enable=true;
+  services.gvfs.enable=true;
 
   services.pipewire = {
     enable = true;
-    # alsa.enable = true;
-    # alsa.support32Bit = true;
-    # pulse.enable = true;
     wireplumber.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
   };
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-  security.pam.services.swaylock = {};
-services.gvfs.enable=true;
-  services.printing.enable=true;
-  services.avahi = {
-  enable = true;
-  nssmdns4 = true;
-  openFirewall = true;
-};
-
 
   services.samba = {
     enable = true;
@@ -263,20 +263,7 @@ sabnzbd = {
 };
 };
 
- # services.invidious.enable=true;
- services.seatd.enable=true;
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [22];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
   #hardware-configuration.nix
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = ["amdgpu" ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
-  boot.supportedFilesystems = ["ntfs"]; 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/68af7dc9-4720-4415-b887-7dac8569098e";
       fsType = "ext4";
@@ -293,7 +280,33 @@ sabnzbd = {
     };
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+
+  hardware={
+    graphics.enable = true;
+    amdgpu.initrd.enable=true;
+    enableAllFirmware=true;
+  cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  };
+
+  boot={
+  kernelModules = [ "kvm-amd" ];
+  extraModulePackages = [ ];
+  supportedFilesystems = ["ntfs"]; 
+  initrd.kernelModules = ["amdgpu" ];
+  initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+  loader={
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      timeout = null;
+    };
+    kernelParams = [
+        "video=DP-1:2560x1440@143.856003"
+        "video=HDMI-A-1:1920x1080@60"
+        "amdgpu.ppfeaturemask=0xffffffff"
+    ];
+    # plymouth.enable=true;
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
