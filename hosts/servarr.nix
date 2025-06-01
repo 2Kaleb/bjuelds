@@ -1,21 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ ... }:
 
 {
-  services.samba = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      global = { "map to guest" = "bad user"; };
-      "public" = {
-        "path" = "/mnt/public";
-        "read only" = "yes";
-        "browseable" = "yes";
-        "guest ok" = "yes";
-        "comment" = "Public samba share.";
-      };
-    };
-  };
-
   services = {
     sonarr = {
       enable = true;

@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  imports = [ ./common-cli.nix ./common-gui.nix ./gaming.nix ];
+  imports = [ ./common-cli.nix ./common-gui.nix ./gaming.nix ./webdav.nix ];
 
   networking.hostName = "asrock-b850i";
 

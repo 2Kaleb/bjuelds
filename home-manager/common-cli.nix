@@ -129,9 +129,8 @@
       functions = {
         listpackages =
           "nix-store --query --requisites /run/current-system | cut -d- -f2- | sort | uniq";
-        listapplications = ''
-          echo '$XDG_DATA_DIRS' | tr ':' '
-          ' | sort | uniq | xargs -I {} find {} -name '*.desktop''';
+        listapplications =
+          "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
         listbinaries =
           "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
 

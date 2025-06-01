@@ -1,7 +1,13 @@
 { pkgs, ... }:
 
 {
-  import = [ ./common-cli.nix ./common-gui.nix ./servarr.nix ./gaming.nix ];
+  import = [
+    ./common-cli.nix
+    ./common-gui.nix
+    ./servarr.nix
+    ./gaming.nix
+    ./webdav.nix
+  ];
   environment.systemPackages = with pkgs; [ davinici-resolve ];
   networking.hostName = "gigabyte-a620i";
 
