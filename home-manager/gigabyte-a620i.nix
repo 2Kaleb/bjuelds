@@ -4,7 +4,7 @@
   imports = [
     ./common-cli.nix
     ./common-gui.nix
-    ./work.nix
+    ./workstation.nix
     ./gaming.nix
     ./compositors.nix
   ];

@@ -30,8 +30,24 @@
       wayfire = {
         prettyName = "Wayfire";
         comment = "Wayfire compositor managed by UWSM";
-        binPath = "/run/current-system/sw/bin/wayfire";
+        binPath = "/etc/profiles/per-user/kdebre/bin/wayfire";
       };
+    };
+  };
+
+  i18n.inputMethod = {
+    type = "fcitx5";
+    enable = true;
+    fcitx5 = {
+      waylandFrontend = true;
+      addons = with pkgs; [
+        rime-data
+        fcitx5-gtk # alternatively, kdePackages.fcitx5-qt
+        # fcitx5-chinese-addons  # table input method support
+        # fcitx5-nord            # a color theme
+        fcitx5-rime
+        fcitx5-m17n
+      ];
     };
   };
 
@@ -42,6 +58,8 @@
 
   security.pam.services.swaylock = { };
   services.gvfs.enable = true;
+  # services.seahorse.enable = true;
+  # services.gnome-keyring.enable = true;
 
   services.pipewire = {
     enable = true;

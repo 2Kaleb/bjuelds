@@ -1,11 +1,12 @@
-{ pkgs, ... }: {
+{ pkgs, pkgs-unstable, ... }: {
   systemd.user.sessionVariables = { NIXOS_OZONE_WL = 1; };
 
   home.packages = with pkgs; [
     slurp
     grim
     wl-clipboard
-    nautilus
+    nemo
+    xfce.thunar
     wlr-randr
     qimgv
     networkmanagerapplet
@@ -15,7 +16,29 @@
     xorg.xeyes
     mission-center
     thunderbird
+    whatsapp-for-linux
+    seahorse
+    gparted
   ];
+
+  programs.foot = let
+    foot-theme = pkgs.fetchurl {
+      url =
+        # "https://codeberg.org/dnkl/foot/src/branch/releases/1.22/themes/kitty";
+        "https://github.com/catppuccin/foot/blob/main/themes/catppuccin-mocha.ini";
+      hash = "sha256-rIcFpnkuBCx/QIV7djvON2XbJN4gmZuTEcmD1A9fuak=";
+    };
+  in {
+    enable = true;
+    server.enable = false;
+    settings = {
+      main = {
+        font = "JetBrainsMonoNFM-Regular:size=14";
+        include = "${foot-theme}";
+      };
+      colors.alpha = 0.5;
+    };
+  };
 
   programs = {
     # thunderbird.enable=true;
@@ -24,12 +47,35 @@
     fuzzel.enable = true;
     mpv.enable = true;
     sioyek.enable = true;
-    zed-editor.enable = true;
+    zed-editor = {
+      enable = true;
+      package = pkgs-unstable.zed-editor;
+      # settings = { };
+    };
   };
 
   services = {
     mako.enable = true;
     kdeconnect.enable = true;
+    gnome-keyring.enable = true;
+  };
+  services.kanshi = {
+    enable = true;
+    settings = [{
+      profile.name = "workstation";
+      profile.outputs = [
+        {
+          criteria = "Eizo Nanao Corporation EV2456 0x03B60B34";
+          # mode = "1920x1200@59.950001Hz";
+          position = "0x0";
+        }
+        {
+          criteria = "Lenovo Group Limited LEN LT2452pwC VN-669632";
+          # mode = "1920x1200@59.950001Hz";
+          position = "1920x0";
+        }
+      ];
+    }];
   };
 
   wayland.windowManager = {
@@ -39,7 +85,7 @@
       wf-shell = {
         enable = true;
         settings.background = {
-          image = "/etc/nixos/wallpaper";
+          image = "/etc/nixos/home-manager/wallpaper";
           preserve_aspect = 0;
           cycle_timeout = 3600;
           randomize = 1;
@@ -49,6 +95,7 @@
         autostart = {
           autostart_wf_shell = false;
           wf_background = "wf-background";
+          autostart = "fish -c /etc/nixos/home-manager/autostart.fish";
         };
         core = {
           plugins =
@@ -63,7 +110,7 @@
           binding_screenshot = "<super> KEY_Q";
           binding_shutdown = "<super> <shift> KEY_S";
           binding_terminal = "<super> KEY_ENTER";
-          binding_nautilus = "<super> KEY_E";
+          binding_filemanager = "<super> KEY_E";
           command_launcher = "fuzzel";
           command_lock = "swaylock";
           command_logout = "pkill -U kdebre";
@@ -71,7 +118,7 @@
           command_screenshot = ''grim -g "$(slurp -d)" - | wl-copy'';
           command_shutdown = "systemctl poweroff";
           command_terminal = "foot";
-          command_nautilus = "nautilus";
+          command_filemanager = "nemo";
         };
         expo.toggle = "<super>";
         input = { xkb_layout = "de"; };

@@ -13,27 +13,21 @@
     neovim = {
       enable = true;
       defaultEditor = true;
+      extraPackages = with pkgs; [
+        nil
+        nixfmt-rfc-style
+        nodejs-slim
+        cargo
+        zig
+        gnumake
+        ripgrep
+        wget
+        unzip
+      ];
     };
     bat = {
       enable = true;
       config.style = "header";
-    };
-    foot = let
-      foot-theme = pkgs.fetchurl {
-        url =
-          "https://codeberg.org/dnkl/foot/src/branch/releases/1.22/themes/kitty";
-        hash = "sha256-nAQlLRZWL8odg/uHLPa2iPjoDiFTGJUkqurRRfSjjRQ=";
-      };
-    in {
-      enable = true;
-      server.enable = false;
-      settings = {
-        main = {
-          font = "JetBrainsMonoNFM-Regular:size=10";
-          include = "${foot-theme}";
-        };
-        colors.alpha = 0.5;
-      };
     };
     fastfetch = {
       enable = true;

@@ -8,14 +8,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, disko }: {
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, disko }: {
     nixosConfigurations = {
 
       gigabyte-a620i = nixpkgs.lib.nixosSystem rec {
@@ -24,10 +24,17 @@
           ./hosts/gigabyte-a620i.nix
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.kdebre =
-              import ./home-manager/gigabyte-a620i.nix;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.kdebre = import ./home-manager/gigabyte-a620i.nix;
+              extraSpecialArgs = {
+                pkgs-unstable = import nixpkgs-unstable {
+                  config.allowUnfree = true;
+                  inherit system;
+                };
+              };
+            };
           }
         ];
       };
@@ -42,6 +49,27 @@
             home-manager.useUserPackages = true;
             home-manager.users.kdebre =
               import ./home-manager/gigabyte-a620i.nix;
+          }
+        ];
+      };
+
+      workstation = nixpkgs.lib.nixosSystem rec {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/workstation.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.kdebre = import ./home-manager/workstation.nix;
+              extraSpecialArgs = {
+                pkgs-unstable = import nixpkgs-unstable {
+                  config.allowUnfree = true;
+                  inherit system;
+                };
+              };
+            };
           }
         ];
       };

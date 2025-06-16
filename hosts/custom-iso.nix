@@ -6,5 +6,4 @@
     ./common-gui.nix
   ];
   networking.hostName = "der-geraet";
-  environment.systemPackages = with pkgs; [ gparted ];
 }
