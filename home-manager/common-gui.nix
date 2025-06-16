@@ -24,9 +24,8 @@
   programs.foot = let
     foot-theme = pkgs.fetchurl {
       url =
-        # "https://codeberg.org/dnkl/foot/src/branch/releases/1.22/themes/kitty";
-        "https://github.com/catppuccin/foot/blob/main/themes/catppuccin-mocha.ini";
-      hash = "sha256-rIcFpnkuBCx/QIV7djvON2XbJN4gmZuTEcmD1A9fuak=";
+        "https://codeberg.org/dnkl/foot/raw/branch/releases/1.22/themes/kitty";
+      hash = "sha256-V0m8tmR4QFRWe//ltX++ojD5X+x2x3cRHaKWfnL8OH8=";
     };
   in {
     enable = true;
@@ -47,6 +46,7 @@
     fuzzel.enable = true;
     mpv.enable = true;
     sioyek.enable = true;
+    vesktop.enable = true;
     zed-editor = {
       enable = true;
       package = pkgs-unstable.zed-editor;
@@ -61,18 +61,19 @@
   };
   services.kanshi = {
     enable = true;
+    # systemdTarget = "graphical-session.target";
     settings = [{
       profile.name = "workstation";
       profile.outputs = [
         {
           criteria = "Eizo Nanao Corporation EV2456 0x03B60B34";
           # mode = "1920x1200@59.950001Hz";
-          position = "0x0";
+          position = "0,0";
         }
         {
           criteria = "Lenovo Group Limited LEN LT2452pwC VN-669632";
           # mode = "1920x1200@59.950001Hz";
-          position = "1920x0";
+          position = "1920,0";
         }
       ];
     }];
@@ -113,7 +114,7 @@
           binding_filemanager = "<super> KEY_E";
           command_launcher = "fuzzel";
           command_lock = "swaylock";
-          command_logout = "pkill -U kdebre";
+          command_logout = "uwsm stop";
           command_reboot = "systemctl reboot";
           command_screenshot = ''grim -g "$(slurp -d)" - | wl-copy'';
           command_shutdown = "systemctl poweroff";
@@ -121,7 +122,12 @@
           command_filemanager = "nemo";
         };
         expo.toggle = "<super>";
-        input = { xkb_layout = "de"; };
+        input = {
+          xkb_layout = "de";
+          scroll_method = "edge";
+          mouse_cursor_speed = 1.0;
+          touchpad_cursor_speed = 1.0;
+        };
         simple-tile.tile_by_default = "all";
         vswitch = {
           binding_1 = "<super> KEY_1";
@@ -138,6 +144,10 @@
           binding_left = "<super> KEY_H";
           binding_right = "<super> KEY_L";
           binding_last = "<super> KEY_TAB";
+          with_win_down = "<super> <shift> KEY_J";
+          with_win_up = "<super> <shift> KEY_K";
+          with_win_left = "<super> <shift> KEY_H";
+          with_win_right = "<super> <shift> KEY_L";
         };
       };
     };
