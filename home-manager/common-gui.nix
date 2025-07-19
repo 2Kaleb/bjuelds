@@ -1,24 +1,26 @@
 { pkgs, pkgs-unstable, ... }: {
-  systemd.user.sessionVariables = { NIXOS_OZONE_WL = 1; };
 
   home.packages = with pkgs; [
     slurp
     grim
     wl-clipboard
     nemo
-    xfce.thunar
+    kdePackages.ark
     wlr-randr
     qimgv
     networkmanagerapplet
     baobab
     czkawka
     isd
+    d-spy
     xorg.xeyes
     mission-center
     thunderbird
-    whatsapp-for-linux
     seahorse
     gparted
+    jellyfin-rpc
+    jellyfin-media-player
+    whatsapp-for-linux
   ];
 
   programs.foot = let
@@ -34,12 +36,58 @@
       main = {
         font = "JetBrainsMonoNFM-Regular:size=14";
         include = "${foot-theme}";
+        # include = ''
+        #
+        #   [colors]
+        #   foreground=dddddd
+        #   background=000000
+        #   regular0=000000  # black
+        #   regular1=cc0403  # red
+        #   regular2=19cb00  # green
+        #   regular3=cecb00  # yellow
+        #   regular4=0d73cc  # blue
+        #   regular5=cb1ed1  # magenta
+        #   regular6=0dcdcd  # cyan
+        #   regular7=dddddd  # white
+        #   bright0=767676   # bright black
+        #   bright1=f2201f   # bright red
+        #   bright2=23fd00   # bright green
+        #   bright3=fffd00   # bright yellow
+        #   bright4=1a8fff   # bright blue
+        #   bright5=fd28ff   # bright magenta
+        #   bright6=14ffff   # bright cyan
+        #   bright7=ffffff   # bright white
+        # '';
       };
       colors.alpha = 0.5;
     };
   };
 
   programs = {
+    mangohud = {
+      enable = true;
+      settings = {
+        gpu_stats = true;
+        gpu_temp = true;
+        cpu_stats = true;
+        cpu_temp = true;
+        fps = true;
+        frametime = false;
+        frame_timing = true;
+        # Gamescope
+        fsr = true;
+        hide_fsr_sharpness = true;
+        debug = true;
+        hdr = true;
+        refresh_rate = true;
+        hud_no_margin = true;
+        hud_compact = true;
+        horizontal = true;
+        toggle_hud = "Shift_R+F12";
+        # toggle_hud_position=Shift_R+F11
+        toggle_preset = "Shift_R+F10";
+      };
+    };
     # thunderbird.enable=true;
     swaylock.enable = true;
     floorp.enable = true;
@@ -58,25 +106,67 @@
     mako.enable = true;
     kdeconnect.enable = true;
     gnome-keyring.enable = true;
+    jellyfin-mpv-shim.enable = true;
   };
-  services.kanshi = {
+  services.shikane = {
     enable = true;
-    # systemdTarget = "graphical-session.target";
-    settings = [{
-      profile.name = "workstation";
-      profile.outputs = [
+    settings = {
+      profile = [
         {
-          criteria = "Eizo Nanao Corporation EV2456 0x03B60B34";
-          # mode = "1920x1200@59.950001Hz";
-          position = "0,0";
+          name = "workstation";
+          output = [
+            {
+              enable = true;
+              search = [
+                "n=HDMI-A-2"
+                "m=EV2456"
+              ]; # , v=Eizo Nanao Corporation, s=0x03B60B34";
+              position = "0,0";
+            }
+            {
+              enable = true;
+              search = [
+                "n=HDMI-A-1"
+                "m=LEN LT2452pwC"
+              ]; # , v=Lenovo Group Limited,  s=VN-669632";
+              position = "1920,0";
+            }
+          ];
         }
         {
-          criteria = "Lenovo Group Limited LEN LT2452pwC VN-669632";
-          # mode = "1920x1200@59.950001Hz";
-          position = "1920,0";
+          name = "laptop";
+          output = [
+            {
+              enable = true;
+              search = [ "n=eDP-1" ];
+              position = "0,0";
+            }
+            {
+              enable = true;
+              search = [ "n=HDMI-A-1" ];
+              position = "900,-1080";
+            }
+          ];
+        }
+        {
+          name = "asrock-b850i";
+          output = [
+            {
+              enable = true;
+              search = [ "m=XF240YU" ];
+              mode = "2560x1440@143.856003Hz";
+              position = "0,0";
+              adaptive_sync = true;
+            }
+            {
+              enable = true;
+              search = [ "n=HDMI-A-2" ];
+              position = "2560,0";
+            }
+          ];
         }
       ];
-    }];
+    };
   };
 
   wayland.windowManager = {
@@ -96,7 +186,6 @@
         autostart = {
           autostart_wf_shell = false;
           wf_background = "wf-background";
-          autostart = "fish -c /etc/nixos/home-manager/autostart.fish";
         };
         core = {
           plugins =

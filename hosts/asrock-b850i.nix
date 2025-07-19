@@ -1,10 +1,15 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [ ./common-cli.nix ./common-gui.nix ./gaming.nix ./webdav.nix ];
 
   networking.hostName = "asrock-b850i";
+  # programs.fish = {
+  # loginShellInit =  "gamescope --backend drm --steam --fullscreen -W 1920 -H 1080 -r 60 -- steam -tenfoot";
+  # };
 
+  environment.systemPackages = with pkgs; [ universal-android-debloater ];
+  programs.adb.enable = true;
   fileSystems."/" = {
     device = "/dev/nvme0n1p3";
     fsType = "ext4";
@@ -24,7 +29,14 @@
   boot = {
     supportedFilesystems = [ "ntfs" ];
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        edk2-uefi-shell.enable = true;
+        # windows."11" = {
+        #   efiDeviceHandle = "HD0f";
+        #   sortKey = "m_windows11";
+        # };
+      };
       efi.canTouchEfiVariables = true;
       timeout = null;
     };

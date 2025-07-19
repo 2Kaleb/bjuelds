@@ -15,13 +15,13 @@
   # };
   services.webdav = {
     enable = true;
-    user = "kdebre";
+    user = "root";
     settings = {
-      address = "127.0.0.1";
-      port = 6060;
+      address = "0.0.0.0";
+      port = 80;
       scope = "/srv/public";
       users = [ ];
     };
   };
-  networking.firewall.allowedTCPPorts = [ 6060 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
 {
   import = [
@@ -8,7 +8,11 @@
     ./gaming.nix
     ./webdav.nix
   ];
-  environment.systemPackages = with pkgs; [ davinici-resolve ];
+  environment.systemPackages = with pkgs; [
+    davinici-resolve
+    universal-android-debloater
+  ];
+  programs.adb.enable = true;
   networking.hostName = "gigabyte-a620i";
 
   fileSystems."/" = {
@@ -34,11 +38,7 @@
       efi.canTouchEfiVariables = true;
       timeout = null;
     };
-    kernelParams = [
-      "video=DP-1:2560x1440@143.856003"
-      "video=HDMI-A-1:1920x1080@60"
-      "amdgpu.ppfeaturemask=0xffffffff"
-    ];
+    kernelParams = [ "amdgpu.ppfeaturemask=0xffffffff" ];
   };
 
   system.stateVersion = "24.05";

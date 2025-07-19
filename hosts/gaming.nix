@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, pkgs-unstable, ... }: {
 
   boot = {
     kernelParams = [
@@ -11,8 +11,23 @@
   programs.steam = {
     enable = true;
     protontricks.enable = true;
-    gamescopeSession.enable = true;
-    extraCompatPackages = with pkgs; [ proton-ge-bin steamtinkerlaunch ];
+    gamescopeSession = {
+      enable = true;
+      # args = [
+      # "--expose-wayland"
+      # "--rt"
+      # "--steam"
+      # "-W 2560 -H 1440"
+      # "-r 144"
+      # "--mangoapp"
+      # "--adaptive-sync"
+      # "--fullscreen"
+      # ];
+    };
+    extraCompatPackages = with pkgs; [
+      pkgs-unstable.proton-ge-bin
+      steamtinkerlaunch
+    ];
     extraPackages = with pkgs; [ gamescope protonplus ];
     package = pkgs.steam.override {
       extraEnv = {
@@ -23,26 +38,24 @@
     };
   };
   programs.gamemode.enable = true;
-  #/usr/bin/gamescope -e -- /usr/bin/steam -tenfoot
   programs.gamescope = {
     enable = true;
     capSysNice = true;
-    args = [
-      "--expose-wayland"
-      # "--rt"
-      "--steam"
-      # "--expose-wayland"
-      # "-W 1920 -H 1080"
-      # "-r 144"
-      "--mangoapp"
-      "--adaptive-sync"
-      "-f"
-    ];
+    # args = [
+    #   # "--expose-wayland"
+    #   "--rt"
+    #   "--steam"
+    #   # "-W 2560 -H 1440"
+    #   # "-r 144"
+    #   # "--mangoapp"
+    #   "--adaptive-sync"
+    #   "--fullscreen"
+    # ];
   };
 
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = [ "multi-user.target" ];
   programs.corectrl.enable = true;
-  programs.coolercontrol.enable = true;
+  # programs.coolercontrol.enable = true;
   services.hardware.openrgb.enable = true;
 }

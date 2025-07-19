@@ -1,15 +1,18 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
 
   networking.networkmanager.enable = true;
   networking.wireless.enable = false;
 
-  hardware = {
-    graphics.enable = true;
-    amdgpu.initrd.enable = true;
-  };
+  hardware.graphics.enable = true;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
+    user = "kdebre";
+    group = "users";
+  };
 
   programs.virt-manager.enable = true;
   virtualisation.libvirtd = {

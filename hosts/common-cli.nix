@@ -26,18 +26,23 @@
     shell = pkgs.fish;
     extraGroups = [ "networkmanager" "wheel" "libvirtd" "seat" ];
   };
+  services.getty.autologinUser = "kdebre";
   programs.fish = {
     enable = true;
     # loginShellInit = "";
   };
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = { PasswordAuthentication = false; };
+  };
+  services.tailscale.enable = true;
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
     enableAllFirmware = true;
-    cpu.amd.updateMicrocode =
-      lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.amd.updateMicrocode = true;
+    cpu.intel.updateMicrocode = true;
   };
 }

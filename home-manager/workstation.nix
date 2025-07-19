@@ -8,17 +8,7 @@
     pkgs-unstable.zoom-us
     gimp
     libreoffice
-    element-desktop
-    jetbrains.pycharm-community-bin
-    kdePackages.ark
     xournalpp
-    code-cursor
-    wechat-uos
-    gnuclad
-    drawio
-    pympress
-    github-desktop
     miktex
-    nextcloud-client
   ];
 }

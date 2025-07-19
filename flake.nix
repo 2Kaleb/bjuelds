@@ -2,13 +2,16 @@
   description = "A simple NixOS flake";
 
   inputs = {
-    nixpkgs = { url = "github:NixOS/nixpkgs/nixos-25.05"; };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,14 +44,27 @@
 
       asrock-b850i = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
+        specialArgs = {
+          pkgs-unstable = import nixpkgs-unstable {
+            config.allowUnfree = true;
+            inherit system;
+          };
+        };
         modules = [
           ./hosts/asrock-b850i.nix
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.kdebre =
-              import ./home-manager/gigabyte-a620i.nix;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.kdebre = import ./home-manager/gigabyte-a620i.nix;
+              extraSpecialArgs = {
+                pkgs-unstable = import nixpkgs-unstable {
+                  config.allowUnfree = true;
+                  inherit system;
+                };
+              };
+            };
           }
         ];
       };

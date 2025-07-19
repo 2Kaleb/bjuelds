@@ -36,12 +36,6 @@
       user = "kdebre";
       group = "users";
     };
-    jellyfin = {
-      enable = true;
-      openFirewall = true;
-      user = "kdebre";
-      group = "users";
-    };
     jellyseerr = {
       enable = true;
       openFirewall = true;
