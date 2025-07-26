@@ -33,11 +33,14 @@
   };
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.trusted-users = [ "kdebre" ];
   services.openssh = {
     enable = true;
-    settings = { PasswordAuthentication = false; };
+    settings = {
+      PasswordAuthentication = false;
+      X11Forwarding = true;
+    };
   };
-  services.tailscale.enable = true;
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {

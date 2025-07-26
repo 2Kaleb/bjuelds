@@ -18,10 +18,105 @@
     thunderbird
     seahorse
     gparted
-    jellyfin-rpc
+    catppuccin-cursors.latteYellow
+    piper
+    wofi-emoji
+    pwvucontrol
+    qpwgraph
     jellyfin-media-player
-    whatsapp-for-linux
   ];
+
+  wayland.windowManager = {
+    wayfire = {
+      enable = true;
+      systemd.enable = true;
+      plugins = with pkgs.wayfirePlugins; [
+        wcm
+        wf-shell
+        wayfire-plugins-extra
+      ];
+      wf-shell = {
+        enable = true;
+        settings.background = {
+          image = "/etc/nixos/home-manager/wallpaper";
+          preserve_aspect = 0;
+          cycle_timeout = 3600;
+          randomize = 1;
+        };
+      };
+      settings = {
+        autostart = {
+          autostart_wf_shell = false;
+          wf_background = "wf-background";
+          portal =
+            "systemctl start --user xdg-desktop-portal-wlr.service;systemctl start --user xdg-desktop-portal-gtk.service;";
+          # polkit = "systemctl --user start polkit-soteria.service";
+          # fumon = "fumon";
+          # uwsm = "uwsm finalize WAYLAND_DISPLAY DISPLAY";
+        };
+        core = {
+          plugins =
+            "alpha animate autostart command cube expo fast-switcher fisheye foreign-toplevel grid gtk-shell idle invert move oswitch preserve-output place resize scale session-lock shortcuts-inhibit simple-tile switcher vswipe vswitch wayfire-shell window-rules wm-actions wobbly wrot zoom";
+          close_top_view = "<super> KEY_C";
+        };
+        command = {
+          binding_launcher = "<super> KEY_S";
+          binding_lock = "<super> <shift> KEY_X";
+          binding_logout = "<super> <shift> KEY_Q";
+          binding_reboot = "<super> <shift> KEY_R";
+          binding_screenshot = "<super> KEY_Q";
+          binding_shutdown = "<super> <shift> KEY_S";
+          binding_terminal = "<super> KEY_ENTER";
+          binding_filemanager = "<super> KEY_E";
+          command_launcher = "fuzzel";
+          command_lock = "swaylock";
+          command_logout = "uwsm stop";
+          command_reboot = "systemctl reboot";
+          command_screenshot = ''grim -g "$(slurp -d)" - | wl-copy'';
+          command_shutdown = "systemctl poweroff";
+          command_terminal = "foot";
+          command_filemanager = "nemo";
+        };
+        expo.toggle = "<super>";
+        input = {
+          xkb_layout = "de";
+          scroll_method = "edge";
+          mouse_cursor_speed = 1.0;
+          touchpad_cursor_speed = 1.0;
+          cursor_theme = "catppuccin-lattey-yellow-cursors";
+        };
+        simple-tile.tile_by_default = "all";
+        vswitch = {
+          binding_1 = "<super> KEY_1";
+          binding_2 = "<super> KEY_2";
+          binding_3 = "<super> KEY_3";
+          binding_4 = "<super> KEY_4";
+          binding_5 = "<super> KEY_5";
+          binding_6 = "<super> KEY_6";
+          binding_7 = "<super> KEY_7";
+          binding_8 = "<super> KEY_8";
+          binding_9 = "<super> KEY_9";
+          binding_down = "<super> KEY_J";
+          binding_up = "<super> KEY_K";
+          binding_left = "<super> KEY_H";
+          binding_right = "<super> KEY_L";
+          binding_last = "<super> KEY_TAB";
+          with_win_down = "<super> <shift> KEY_J";
+          with_win_up = "<super> <shift> KEY_K";
+          with_win_left = "<super> <shift> KEY_H";
+          with_win_right = "<super> <shift> KEY_L";
+        };
+      };
+    };
+  };
+  # home.file.".icons/default".source = "${pkgs.catppuccin-cursors.latteYellow}";
+  # home.pointerCursor = {
+  #   enable = true;
+  #   package = pkgs.catppuccin-cursors.latteYellow;
+  #   gtk.enable = true;
+  #   name = "default";
+  #   dotIcons.enable = true;
+  # };
 
   programs.foot = let
     foot-theme = pkgs.fetchurl {
@@ -36,28 +131,6 @@
       main = {
         font = "JetBrainsMonoNFM-Regular:size=14";
         include = "${foot-theme}";
-        # include = ''
-        #
-        #   [colors]
-        #   foreground=dddddd
-        #   background=000000
-        #   regular0=000000  # black
-        #   regular1=cc0403  # red
-        #   regular2=19cb00  # green
-        #   regular3=cecb00  # yellow
-        #   regular4=0d73cc  # blue
-        #   regular5=cb1ed1  # magenta
-        #   regular6=0dcdcd  # cyan
-        #   regular7=dddddd  # white
-        #   bright0=767676   # bright black
-        #   bright1=f2201f   # bright red
-        #   bright2=23fd00   # bright green
-        #   bright3=fffd00   # bright yellow
-        #   bright4=1a8fff   # bright blue
-        #   bright5=fd28ff   # bright magenta
-        #   bright6=14ffff   # bright cyan
-        #   bright7=ffffff   # bright white
-        # '';
       };
       colors.alpha = 0.5;
     };
@@ -103,9 +176,12 @@
   };
 
   services = {
-    mako.enable = true;
+    fnott = {
+      enable = true;
+      settings = { main = { default-timeout = 10; }; };
+    };
     kdeconnect.enable = true;
-    gnome-keyring.enable = true;
+    # gnome-keyring.enable = true;
     jellyfin-mpv-shim.enable = true;
   };
   services.shikane = {
@@ -138,7 +214,7 @@
           output = [
             {
               enable = true;
-              search = [ "n=eDP-1" ];
+              search = "n=eDP-1";
               position = "0,0";
             }
             {
@@ -169,88 +245,34 @@
     };
   };
 
-  wayland.windowManager = {
-    wayfire = {
-      enable = true;
-      systemd.enable = true;
-      wf-shell = {
-        enable = true;
-        settings.background = {
-          image = "/etc/nixos/home-manager/wallpaper";
-          preserve_aspect = 0;
-          cycle_timeout = 3600;
-          randomize = 1;
-        };
-      };
-      settings = {
-        autostart = {
-          autostart_wf_shell = false;
-          wf_background = "wf-background";
-        };
-        core = {
-          plugins =
-            "alpha animate autostart command cube expo fast-switcher fisheye foreign-toplevel grid gtk-shell idle invert move oswitch preserve-output place resize scale session-lock shortcuts-inhibit simple-tile switcher vswipe vswitch wayfire-shell window-rules wm-actions wobbly wrot zoom";
-          close_top_view = "<super> KEY_C";
-        };
-        command = {
-          binding_launcher = "<super> KEY_S";
-          binding_lock = "<super> <shift> KEY_X";
-          binding_logout = "<super> <shift> KEY_Q";
-          binding_reboot = "<super> <shift> KEY_R";
-          binding_screenshot = "<super> KEY_Q";
-          binding_shutdown = "<super> <shift> KEY_S";
-          binding_terminal = "<super> KEY_ENTER";
-          binding_filemanager = "<super> KEY_E";
-          command_launcher = "fuzzel";
-          command_lock = "swaylock";
-          command_logout = "uwsm stop";
-          command_reboot = "systemctl reboot";
-          command_screenshot = ''grim -g "$(slurp -d)" - | wl-copy'';
-          command_shutdown = "systemctl poweroff";
-          command_terminal = "foot";
-          command_filemanager = "nemo";
-        };
-        expo.toggle = "<super>";
-        input = {
-          xkb_layout = "de";
-          scroll_method = "edge";
-          mouse_cursor_speed = 1.0;
-          touchpad_cursor_speed = 1.0;
-        };
-        simple-tile.tile_by_default = "all";
-        vswitch = {
-          binding_1 = "<super> KEY_1";
-          binding_2 = "<super> KEY_2";
-          binding_3 = "<super> KEY_3";
-          binding_4 = "<super> KEY_4";
-          binding_5 = "<super> KEY_5";
-          binding_6 = "<super> KEY_6";
-          binding_7 = "<super> KEY_7";
-          binding_8 = "<super> KEY_8";
-          binding_9 = "<super> KEY_9";
-          binding_down = "<super> KEY_J";
-          binding_up = "<super> KEY_K";
-          binding_left = "<super> KEY_H";
-          binding_right = "<super> KEY_L";
-          binding_last = "<super> KEY_TAB";
-          with_win_down = "<super> <shift> KEY_J";
-          with_win_up = "<super> <shift> KEY_K";
-          with_win_left = "<super> <shift> KEY_H";
-          with_win_right = "<super> <shift> KEY_L";
-        };
+  xdg = {
+    desktopEntries = {
+      "dev.zed.Zed" = {
+        name = "Zed";
+        exec = "mangohud zeditor %U";
+        icon = "zed";
+        mimeType = [ "text/plain" ];
       };
     };
-  };
-
-  xdg = {
     portal = {
       enable = true;
+      # xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-wlr
+        xdg-desktop-portal-hyprland
         xdg-desktop-portal-gtk
-        gnome-keyring
+        # gnome-keyring
+        darkman
       ];
-      config = { common = { default = [ "wlr" "gnome-keyring" "gtk" ]; }; };
+      # config = { common = { default = [ "wlr" "gnome-keyring" "gtk" ]; }; };
+      config = {
+        wlroots = {
+          default = [ "gtk" ];
+          "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
+          "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
+          "org.freedesktop.impl.portal.Settings" = [ "darkman" ];
+        };
+      };
     };
   };
 }

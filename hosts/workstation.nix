@@ -2,10 +2,13 @@
 
 {
   imports = [ ./common-cli.nix ./common-gui.nix ];
+  environment.systemPackages = with pkgs; [ obs-studio ];
   services.printing = {
     enable = true;
     drivers = with pkgs; [ gutenprint gutenprintBin hplipWithPlugin ];
   };
+  services.solaar.enable = true;
+  services.ratbagd.enable = true;
 
   networking.hostName = "workstation";
 

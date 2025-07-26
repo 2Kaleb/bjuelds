@@ -1,18 +1,31 @@
 { pkgs, lib, ... }: {
 
-  networking.networkmanager.enable = true;
-  networking.wireless.enable = false;
-
-  hardware.graphics.enable = true;
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
   services.jellyfin = {
     enable = true;
     openFirewall = true;
     user = "kdebre";
-    group = "users";
   };
+  services.seatd.enable = true;
+  security.pam.services.swaylock = { };
+  services.gvfs.enable = true;
+  security.polkit.enable = true;
+  security.soteria.enable = true;
+  # services.seahorse.enable = true;
+  # services.gnome-keyring.enable = true;
+  services.pipewire = {
+    enable = true;
+    # alsa.enable = true;
+    # audio.enable = true;
+    wireplumber.enable = true;
+  };
+  services.dbus.implementation = "broker";
+
+  networking.networkmanager.enable = true;
+
+  hardware.graphics.enable = true;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
   programs.virt-manager.enable = true;
   virtualisation.libvirtd = {
@@ -56,16 +69,4 @@
 
   programs.kdeconnect.enable = true;
   programs.gnome-disks.enable = true;
-
-  services.seatd.enable = true;
-
-  security.pam.services.swaylock = { };
-  services.gvfs.enable = true;
-  # services.seahorse.enable = true;
-  # services.gnome-keyring.enable = true;
-
-  services.pipewire = {
-    enable = true;
-    wireplumber.enable = true;
-  };
 }

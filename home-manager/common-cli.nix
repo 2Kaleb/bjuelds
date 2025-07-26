@@ -1,6 +1,7 @@
 { config, pkgs, ... }: {
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
+
   home.packages = with pkgs; [ ];
   programs = {
     distrobox.enable = true;
@@ -18,7 +19,7 @@
         nixfmt-rfc-style
         nodejs-slim
         cargo
-        zig
+        gcc
         gnumake
         ripgrep
         wget
