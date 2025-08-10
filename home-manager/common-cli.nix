@@ -2,7 +2,7 @@
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
 
-  home.packages = with pkgs; [ ];
+  home.packages = with pkgs; [ himalaya ];
   programs = {
     distrobox.enable = true;
     git = {
@@ -132,8 +132,6 @@
       };
     };
   };
-
-  services.podman.enable = true;
 
   home.stateVersion = "24.11";
 

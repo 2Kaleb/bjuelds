@@ -63,6 +63,12 @@
 
         workstation = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
+          specialArgs = {
+            pkgs-unstable = import nixpkgs-unstable {
+              config.allowUnfree = true;
+              inherit system;
+            };
+          };
           modules = [
             ./hosts/workstation.nix
             solaar.nixosModules.default
@@ -98,15 +104,20 @@
         };
 
         # nix build .#nixosConfigurations.exampleIso.config.system.build.isoImage
-        custom-iso = nixpkgs.lib.nixosSystem {
+        custom-iso = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
             ./hosts/custom-iso.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.kdebre = import ./home-manager/custom-iso.nix;
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.kdebre = import ./home-manager/custom-iso.nix;
+                extraSpecialArgs = {
+                  pkgs-unstable = import nixpkgs-unstable { inherit system; };
+                };
+              };
             }
           ];
         };

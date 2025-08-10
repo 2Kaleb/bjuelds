@@ -1,5 +1,6 @@
 { pkgs, lib, ... }: {
 
+  environment.systemPackages = with pkgs; [ brightnessctl ];
   services.blueman.enable = true;
   services.jellyfin = {
     enable = true;

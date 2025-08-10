@@ -1,8 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
 {
   imports = [ ./common-cli.nix ./common-gui.nix ];
   environment.systemPackages = with pkgs; [ obs-studio ];
+  programs.zoom-us = {
+    enable = true;
+    package = pkgs-unstable.zoom-us;
+  };
   services.printing = {
     enable = true;
     drivers = with pkgs; [ gutenprint gutenprintBin hplipWithPlugin ];
@@ -21,7 +25,7 @@
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];
   };
-  fileSystems."/mnt/shared" = {
+  fileSystems."/mnt/ntfs" = {
     device = "/dev/sda6";
     fsType = "ntfs-3g";
     options = [ "rw" "uid=1000" ];

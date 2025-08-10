@@ -6,4 +6,5 @@
     ./common-gui.nix
   ];
   networking.hostName = "der-geraet";
+  networking.wireless.enable = false;
 }

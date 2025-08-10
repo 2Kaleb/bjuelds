@@ -2,6 +2,16 @@
 
 {
 
+  services.getty.autologinUser = lib.mkForce "kdebre";
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      X11Forwarding = true;
+    };
+  };
+  services.tailscale.enable = true;
+  virtualisation.podman.enable = true;
   time.timeZone = "Europe/Berlin";
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -24,9 +34,9 @@
     isNormalUser = true;
     description = "kdebre";
     shell = pkgs.fish;
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" "seat" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "seat" "podman" ];
   };
-  services.getty.autologinUser = "kdebre";
+
   programs.fish = {
     enable = true;
     # loginShellInit = "";
@@ -34,13 +44,7 @@
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "kdebre" ];
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      X11Forwarding = true;
-    };
-  };
+
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {

@@ -9,21 +9,18 @@
     wlr-randr
     qimgv
     networkmanagerapplet
-    baobab
-    czkawka
     isd
     d-spy
-    xorg.xeyes
     mission-center
     thunderbird
     seahorse
-    gparted
     catppuccin-cursors.latteYellow
     piper
     wofi-emoji
     pwvucontrol
     qpwgraph
     jellyfin-media-player
+    anki-bin
   ];
 
   wayland.windowManager = {
