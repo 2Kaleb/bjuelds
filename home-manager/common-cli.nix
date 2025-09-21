@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, pkgs-unstable, ... }: {
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
 
@@ -10,6 +10,7 @@
       package = pkgs.gitMinimal;
       userName = "Kaleb Debre";
       userEmail = "kalebdebre@web.de";
+      # ignoreFile = false;
     };
     neovim = {
       enable = true;
@@ -32,6 +33,7 @@
     };
     fastfetch = {
       enable = true;
+      package = pkgs-unstable.fastfetch;
       settings = {
         logo = { padding = { top = 2; }; };
         modules = [

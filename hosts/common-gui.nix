@@ -2,11 +2,6 @@
 
   environment.systemPackages = with pkgs; [ brightnessctl ];
   services.blueman.enable = true;
-  services.jellyfin = {
-    enable = true;
-    openFirewall = true;
-    user = "kdebre";
-  };
   services.seatd.enable = true;
   security.pam.services.swaylock = { };
   services.gvfs.enable = true;

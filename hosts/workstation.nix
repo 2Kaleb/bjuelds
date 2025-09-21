@@ -3,10 +3,10 @@
 {
   imports = [ ./common-cli.nix ./common-gui.nix ];
   environment.systemPackages = with pkgs; [ obs-studio ];
-  programs.zoom-us = {
-    enable = true;
-    package = pkgs-unstable.zoom-us;
-  };
+  # programs.zoom-us = {
+  #   enable = true;
+  #   package = pkgs-unstable.zoom-us;
+  # };
   services.printing = {
     enable = true;
     drivers = with pkgs; [ gutenprint gutenprintBin hplipWithPlugin ];

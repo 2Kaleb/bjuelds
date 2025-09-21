@@ -1,7 +1,7 @@
 { pkgs, pkgs-unstable, ... }:
 
 {
-  imports = [ ./common-cli.nix ./common-gui.nix ];
+  imports = [ ./common-cli.nix ./common-gui.nix ./gaming.nix ];
   programs.obs-studio = {
     enable = true;
     plugins = with pkgs.obs-studio-plugins; [
@@ -14,7 +14,7 @@
     ];
   };
   xdg.desktopEntries = {
-    "com.obsproject.Studio.desktop" = {
+    "com.obsproject.Studio" = {
       name = "OBS Studio";
       exec = "obs --disable-shutdown-check";
       icon = "com.obsproject.Studio";
@@ -30,6 +30,7 @@
   home.packages = with pkgs; [
     pdfsam-basic
     zotero
+    pkgs-unstable.zoom-us
     # gimp
     libreoffice
     onlyoffice-desktopeditors
@@ -37,10 +38,13 @@
     rnote
     github-desktop
     miktex
+    texstudio
     ashpd-demo
     door-knocker
     obsidian
     pwvucontrol
     wasistlos
+    gnome-font-viewer
+    element-desktop
   ];
 }
