@@ -14,7 +14,7 @@
     mission-center
     thunderbird
     seahorse
-    catppuccin-cursors.latteYellow
+    catppuccin-cursors.latteDark
     piper
     wofi-emoji
     pwvucontrol
@@ -83,9 +83,11 @@
         input = {
           xkb_layout = "de";
           scroll_method = "edge";
+          natural_scroll = true;
           mouse_cursor_speed = 1.0;
           touchpad_cursor_speed = 1.0;
-          cursor_theme = "catppuccin-lattey-yellow-cursors";
+          cursor_theme = "catppuccin-latte-dark-cursors";
+          cursor_size = 48;
         };
         simple-tile.tile_by_default = "all";
         vswitch = {
@@ -176,11 +178,11 @@
     swaylock.enable = true;
     librewolf = {
       enable = true;
-      settings = {
-        "pdfjs.spreadModeOnLoad" = true;
-        "browser.sessionstore.resume_from_crash" = false;
-        "browser.bookmarks.openInTabClosesMenu" = false;
-      };
+      # settings = {
+      #   "pdfjs.spreadModeOnLoad" = true;
+      #   "browser.sessionstore.resume_from_crash" = false;
+      #   "browser.bookmarks.openInTabClosesMenu" = false;
+      # };
     };
     fuzzel.enable = true;
     mpv.enable = true;
@@ -199,8 +201,6 @@
       settings = { main = { default-timeout = 10; }; };
     };
     kdeconnect.enable = true;
-    # gnome-keyring.enable = true;
-    # jellyfin-mpv-shim.enable = true;
     swayidle = {
       enable = true;
       events = [{
@@ -284,6 +284,16 @@
       };
     };
   };
+  gtk = {
+    enable = true;
+    # colorScheme = null;
+    iconTheme = null;
+    theme = null;
+    cursorTheme = {
+      name = "catppuccin-latte-dark-cursors";
+      size = 48;
+    };
+  };
   xdg = {
     desktopEntries = {
       "dev.zed.Zed" = {
@@ -298,7 +308,6 @@
       # xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-wlr
-        xdg-desktop-portal-hyprland
         xdg-desktop-portal-gtk
         # gnome-keyring
         darkman
