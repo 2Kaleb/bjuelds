@@ -14,13 +14,15 @@
     mission-center
     thunderbird
     seahorse
-    catppuccin-cursors.latteYellow
+    catppuccin-cursors.latteDark
     piper
     wofi-emoji
     pwvucontrol
     qpwgraph
     jellyfin-media-player
     anki-bin
+    swayidle
+    ladybird
   ];
 
   wayland.windowManager = {
@@ -45,8 +47,7 @@
         autostart = {
           autostart_wf_shell = false;
           wf_background = "wf-background";
-          portal =
-            "systemctl start --user xdg-desktop-portal-wlr.service;systemctl start --user xdg-desktop-portal-gtk.service;";
+          # portal ="systemctl start --user xdg-desktop-portal-wlr.service;systemctl start --user xdg-desktop-portal-gtk.service;";
           # polkit = "systemctl --user start polkit-soteria.service";
           # fumon = "fumon";
           # uwsm = "uwsm finalize WAYLAND_DISPLAY DISPLAY";
@@ -58,29 +59,35 @@
         };
         command = {
           binding_launcher = "<super> KEY_S";
-          binding_lock = "<super> <shift> KEY_X";
+          binding_sleep = "<super> <shift> KEY_X";
+          binding_lock = "<super> KEY_X";
           binding_logout = "<super> <shift> KEY_Q";
           binding_reboot = "<super> <shift> KEY_R";
           binding_screenshot = "<super> KEY_Q";
           binding_shutdown = "<super> <shift> KEY_S";
           binding_terminal = "<super> KEY_ENTER";
           binding_filemanager = "<super> KEY_E";
+          binding_emoji = "<super> KEY_DOT";
           command_launcher = "fuzzel";
           command_lock = "swaylock";
+          command_sleep = "systemctl sleep";
           command_logout = "uwsm stop";
           command_reboot = "systemctl reboot";
           command_screenshot = ''grim -g "$(slurp -d)" - | wl-copy'';
           command_shutdown = "systemctl poweroff";
           command_terminal = "foot";
           command_filemanager = "nemo";
+          command_emoji = "wofi-emoji";
         };
         expo.toggle = "<super>";
         input = {
           xkb_layout = "de";
           scroll_method = "edge";
+          natural_scroll = true;
           mouse_cursor_speed = 1.0;
           touchpad_cursor_speed = 1.0;
-          cursor_theme = "catppuccin-lattey-yellow-cursors";
+          cursor_theme = "catppuccin-latte-dark-cursors";
+          cursor_size = 48;
         };
         simple-tile.tile_by_default = "all";
         vswitch = {
@@ -102,6 +109,15 @@
           with_win_up = "<super> <shift> KEY_K";
           with_win_left = "<super> <shift> KEY_H";
           with_win_right = "<super> <shift> KEY_L";
+          with_win_1 = "<super> <shift> KEY_1";
+          with_win_2 = "<super> <shift> KEY_2";
+          with_win_3 = "<super> <shift> KEY_3";
+          with_win_4 = "<super> <shift> KEY_4";
+          with_win_5 = "<super> <shift> KEY_5";
+          with_win_6 = "<super> <shift> KEY_6";
+          with_win_7 = "<super> <shift> KEY_7";
+          with_win_8 = "<super> <shift> KEY_8";
+          with_win_9 = "<super> <shift> KEY_9";
         };
       };
     };
@@ -160,7 +176,14 @@
     };
     # thunderbird.enable=true;
     swaylock.enable = true;
-    floorp.enable = true;
+    librewolf = {
+      enable = true;
+      # settings = {
+      #   "pdfjs.spreadModeOnLoad" = true;
+      #   "browser.sessionstore.resume_from_crash" = false;
+      #   "browser.bookmarks.openInTabClosesMenu" = false;
+      # };
+    };
     fuzzel.enable = true;
     mpv.enable = true;
     sioyek.enable = true;
@@ -178,70 +201,99 @@
       settings = { main = { default-timeout = 10; }; };
     };
     kdeconnect.enable = true;
-    # gnome-keyring.enable = true;
-    jellyfin-mpv-shim.enable = true;
-  };
-  services.shikane = {
-    enable = true;
-    settings = {
-      profile = [
+    swayidle = {
+      enable = true;
+      events = [{
+        event = "before-sleep";
+        command = "${pkgs.swaylock}/bin/swaylock -fF";
+      }
+      # {
+      #   event = "lock";
+      #   command = "lock";
+      # }
+        ];
+      timeouts = [
+        # {
+        #   timeout = 300;
+        #   command = "${pkgs.swaylock}/bin/swaylock -fF";
+        # }
         {
-          name = "workstation";
-          output = [
-            {
-              enable = true;
-              search = [
-                "n=HDMI-A-2"
-                "m=EV2456"
-              ]; # , v=Eizo Nanao Corporation, s=0x03B60B34";
-              position = "0,0";
-            }
-            {
-              enable = true;
-              search = [
-                "n=HDMI-A-1"
-                "m=LEN LT2452pwC"
-              ]; # , v=Lenovo Group Limited,  s=VN-669632";
-              position = "1920,0";
-            }
-          ];
-        }
-        {
-          name = "laptop";
-          output = [
-            {
-              enable = true;
-              search = "n=eDP-1";
-              position = "0,0";
-            }
-            {
-              enable = true;
-              search = [ "n=HDMI-A-1" ];
-              position = "900,-1080";
-            }
-          ];
-        }
-        {
-          name = "asrock-b850i";
-          output = [
-            {
-              enable = true;
-              search = [ "m=XF240YU" ];
-              mode = "2560x1440@143.856003Hz";
-              position = "0,0";
-              adaptive_sync = true;
-            }
-            {
-              enable = true;
-              search = [ "n=HDMI-A-2" ];
-              position = "2560,0";
-            }
-          ];
+          timeout = 1800;
+          command = "${pkgs.systemd}/bin/systemctl suspend";
         }
       ];
     };
+    shikane = {
+      enable = true;
+      settings = {
+        profile = [
+          {
+            name = "workstation";
+            output = [
+              {
+                enable = true;
+                search = [
+                  "n=HDMI-A-2"
+                  "m=EV2456"
+                ]; # , v=Eizo Nanao Corporation, s=0x03B60B34";
+                position = "0,0";
+              }
+              {
+                enable = true;
+                search = [
+                  "n=HDMI-A-1"
+                  "m=LEN LT2452pwC"
+                ]; # , v=Lenovo Group Limited,  s=VN-669632";
+                position = "1920,0";
+              }
+            ];
+          }
+          {
+            name = "laptop";
+            output = [
+              {
+                enable = true;
+                search = "n=eDP-1";
+                position = "0,0";
+              }
+              {
+                enable = true;
+                search = [ "n=HDMI-A-1" ];
+                position = "900,-1080";
+              }
+            ];
+          }
+          {
+            name = "asrock-b850i";
+            output = [
+              {
+                enable = true;
+                search = [ "m=XF240YU" ];
+                mode = "2560x1440@143.856003Hz";
+                position = "0,0";
+                adaptive_sync = true;
+              }
+              {
+                enable = true;
+                search = [ "n=HDMI-A-2" ];
+                position = "2560,0";
+              }
+            ];
+          }
+        ];
+      };
+    };
   };
-
+  gtk = {
+    enable = true;
+    # colorScheme = null;
+    iconTheme = null;
+    theme = null;
+    cursorTheme = {
+      name = "catppuccin-latte-dark-cursors";
+      size = 48;
+    };
+  };
   xdg = {
     desktopEntries = {
       "dev.zed.Zed" = {
@@ -256,7 +308,6 @@
       # xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-wlr
-        xdg-desktop-portal-hyprland
         xdg-desktop-portal-gtk
         # gnome-keyring
         darkman
@@ -265,8 +316,8 @@
       config = {
         wlroots = {
           default = [ "gtk" ];
-          "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
-          "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
+          "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
+          "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
           "org.freedesktop.impl.portal.Settings" = [ "darkman" ];
         };
       };

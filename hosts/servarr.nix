@@ -2,6 +2,11 @@
 
 {
   services = {
+    jellyfin = {
+      enable = true;
+      openFirewall = true;
+      user = "kdebre";
+    };
     sonarr = {
       enable = true;
       openFirewall = true;
