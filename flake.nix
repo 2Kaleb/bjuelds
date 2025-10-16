@@ -16,14 +16,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    solaar = {
-      url = "https://flakehub.com/f/Svenum/Solaar-Flake/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    copyparty.url = "github:9001/copyparty";
   };
 
-  outputs =
-    inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, disko, solaar }: {
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, disko
+    , copyparty }: {
       nixosConfigurations = {
 
         gigabyte-a620i = nixpkgs.lib.nixosSystem rec {
@@ -63,15 +60,8 @@
 
         workstation = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
-          specialArgs = {
-            pkgs-unstable = import nixpkgs-unstable {
-              config.allowUnfree = true;
-              inherit system;
-            };
-          };
           modules = [
             ./hosts/workstation.nix
-            solaar.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -89,35 +79,40 @@
           ];
         };
 
-        servitro = nixpkgs.lib.nixosSystem {
+        servitro = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
             disko.nixosModules.disko
             ./hosts/servitro.nix
             home-manager.nixosModules.home-manager
+            copyparty.nixosModules.default
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.kdebre = import ./home-manager/servitro.nix;
+              nixpkgs.overlays = [ copyparty.overlays.default ];
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.kdebre = import ./home-manager/common-cli.nix;
+                extraSpecialArgs = {
+                  pkgs-unstable = import nixpkgs-unstable {
+                    config.allowUnfree = true;
+                    inherit system;
+                  };
+                };
+              };
             }
           ];
         };
 
         # nix build .#nixosConfigurations.exampleIso.config.system.build.isoImage
-        custom-iso = nixpkgs.lib.nixosSystem rec {
+        custom-iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
             ./hosts/custom-iso.nix
             home-manager.nixosModules.home-manager
             {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.kdebre = import ./home-manager/custom-iso.nix;
-                extraSpecialArgs = {
-                  pkgs-unstable = import nixpkgs-unstable { inherit system; };
-                };
-              };
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.kdebre = import ./home-manager/custom-iso.nix;
             }
           ];
         };

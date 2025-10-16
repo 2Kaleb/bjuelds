@@ -11,7 +11,7 @@
     };
   };
   services.tailscale.enable = true;
-  virtualisation.podman.enable = true;
+
   time.timeZone = "Europe/Berlin";
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -34,18 +34,16 @@
     isNormalUser = true;
     description = "kdebre";
     shell = pkgs.fish;
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" "seat" "podman" ];
+    extraGroups =
+      [ "networkmanager" "wheel" "libvirtd" "seat" "podman" "docker" ];
   };
 
-  programs.fish = {
-    enable = true;
-    # loginShellInit = "";
-  };
+  programs.fish.enable = true;
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "kdebre" ];
   nix.settings.auto-optimise-store = true;
-
+  virtualisation.docker.enable = true;
+  virtualisation.podman.enable = true;
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {

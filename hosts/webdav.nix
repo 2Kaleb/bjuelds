@@ -1,27 +1,23 @@
 { ... }: {
-  # services.samba = {
-  #   enable = true;
-  #   openFirewall = true;
-  #   settings = {
-  #     global = { "map to guest" = "bad user"; };
-  #     "public" = {
-  #       "path" = "/Public";
-  #       "read only" = "yes";
-  #       "browseable" = "yes";
-  #       "guest ok" = "yes";
-  #       "comment" = "Public samba share.";
-  #     };
-  #   };
-  # };
-  services.webdav = {
+  # users.groups.copyparty = { };
+  services.copyparty = {
     enable = true;
-    user = "root";
+    user = "kdebre";
     settings = {
-      address = "0.0.0.0";
-      port = 80;
-      scope = "/srv/public";
-      users = [ ];
+      i = "127.0.0.1";
+      p = [ 3923 ];
+      xff-hdr = "x-forwarded-for";
+      xff-src = "127.0.0.1";
+      rproxy = 1;
+      allow-csrf = true;
+      daw = true;
+    };
+    accounts = { kdebre.passwordFile = "/home/kdebre/.secret-copyparty"; };
+    volumes = {
+      "/" = {
+        path = "/srv/public";
+        access = { rwmd = [ "kdebre" ]; };
+      };
     };
   };
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
 }

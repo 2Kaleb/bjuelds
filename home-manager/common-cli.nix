@@ -2,7 +2,7 @@
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
 
-  home.packages = with pkgs; [ himalaya ];
+  home.packages = with pkgs; [ isd himalaya ];
   programs = {
     distrobox.enable = true;
     git = {
