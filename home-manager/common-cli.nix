@@ -1,16 +1,87 @@
-{ config, pkgs, pkgs-unstable, ... }: {
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
+{
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
+  home.packages = with pkgs; [
+    himalaya
+    isd
+  ];
+  accounts.email.accounts."tu-darmstadt.de" = {
+    address = "kaleb.debre@tu-darmstadt.de";
+    realName = "Kaleb Debre";
+    userName = "kt91koru";
+    # signature.command = /home/kdebre/repos/dotfiles/Signatur_Arbeit.html;
+    primary = true;
+    imap = {
+      host = "mail.tu-darmstadt.de";
+      port = 993;
+      # authentication = "plain";
+      tls.enable = true;
+    };
+    smtp = {
+      host = "smtp.tu-darmstadt.de";
+      port = 465;
+      # authentication = "plain";
+      tls.enable = true;
+    };
+    thunderbird.enable = true;
+    himalaya.enable = true;
+    # himalaya.settings = {
+    #   default = true;
+    #   display-name = "tu-darmstadt";
+    #   email = "kaleb.debre@tu-darmstadt.de";
+    #   downloads-dir = "/home/kdebre/Downloads";
 
-  home.packages = with pkgs; [ isd himalaya ];
+    #   backend = {
+    #     type = "imap";
+    #     host = "mail.tu-darmstadt.de";
+    #     port = 993;
+    #     login = "kt91koru";
+    #     encryption = {
+    #       type = "tls";
+    #     };
+    #     auth = {
+    #       type = "password";
+    #       cmd = "pass show tu-darmstadt";
+    #     };
+    #   };
+
+    #   message = {
+    #     send = {
+    #       backend = {
+    #         type = "smtp";
+    #         host = "smtp.tu-darmstadt.de";
+    #         port = 465;
+    #         login = "kt91koru";
+    #         encryption = {
+    #           type = "tls";
+    #         };
+    #         auth = {
+    #           type = "password";
+    #           cmd = "pass show tu-darmstadt";
+    #         };
+    #       };
+    #     };
+    #   };
+    # };
+
+  };
+
   programs = {
     distrobox.enable = true;
+    # himalaya.enable = true;
     git = {
       enable = true;
       package = pkgs.gitMinimal;
-      userName = "Kaleb Debre";
-      userEmail = "kalebdebre@web.de";
-      # ignoreFile = false;
+      settings.user = {
+        email = "kalebdebre@web.de";
+        name = "Kaleb Debre";
+      };
     };
     neovim = {
       enable = true;
@@ -35,7 +106,11 @@
       enable = true;
       package = pkgs-unstable.fastfetch;
       settings = {
-        logo = { padding = { top = 2; }; };
+        logo = {
+          padding = {
+            top = 2;
+          };
+        };
         modules = [
           "title"
           "separator"
@@ -101,17 +176,26 @@
         show_cpu_temperature = 1;
         sort_key = 39;
         sort_direction = -1;
-      } // (with config.lib.htop;
-        leftMeters [ (bar "CPU") (bar "AllCPUs2") (bar "MemorySwap") ])
-        // (with config.lib.htop;
-          rightMeters [
-            (text "DateTime")
-            (text "Hostname")
-            (text "System")
-            (text "Uptime")
-            (text "DiskIO")
-            (text "NetworkIO")
-          ]);
+      }
+      // (
+        with config.lib.htop;
+        leftMeters [
+          (bar "CPU")
+          (bar "AllCPUs2")
+          (bar "MemorySwap")
+        ]
+      )
+      // (
+        with config.lib.htop;
+        rightMeters [
+          (text "DateTime")
+          (text "Hostname")
+          (text "System")
+          (text "Uptime")
+          (text "DiskIO")
+          (text "NetworkIO")
+        ]
+      );
     };
     lazygit.enable = true;
     tealdeer.enable = true;
@@ -121,15 +205,17 @@
       enable = true;
       enableFishIntegration = true;
     };
+    eza.enable = true;
     fish = {
       enable = true;
+      shellAliases = {
+        ls = "eza -lg";
+        ll = "eza -lgTa -s modified";
+      };
       functions = {
-        listpackages =
-          "nix-store --query --requisites /run/current-system | cut -d- -f2- | sort | uniq";
-        listapplications =
-          "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
-        listbinaries =
-          "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
+        listpackages = "nix-store --query --requisites /run/current-system";
+        listapplications = "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
+        listbinaries = "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
 
       };
     };

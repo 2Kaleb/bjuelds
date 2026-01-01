@@ -5,25 +5,22 @@
     jellyfin = {
       enable = true;
       openFirewall = true;
-      user = "kdebre";
+      group = "media";
     };
     sonarr = {
       enable = true;
       openFirewall = true;
-      user = "kdebre";
-      group = "users";
+      group = "media";
     };
     bazarr = {
       enable = true;
       openFirewall = true;
-      user = "kdebre";
-      group = "users";
+      group = "media";
     };
     lidarr = {
       enable = true;
       openFirewall = true;
-      user = "kdebre";
-      group = "users";
+      group = "media";
     };
     prowlarr = {
       enable = true;
@@ -32,14 +29,13 @@
     radarr = {
       enable = true;
       openFirewall = true;
-      user = "kdebre";
-      group = "users";
+      group = "media";
     };
     readarr = {
       enable = true;
       openFirewall = true;
       user = "kdebre";
-      group = "users";
+      group = "media";
     };
     jellyseerr = {
       enable = true;
@@ -49,7 +45,7 @@
       enable = true;
       openFirewall = true;
       user = "kdebre";
-      group = "users";
+      group = "media";
     };
   };
 }

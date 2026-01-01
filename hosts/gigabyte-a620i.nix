@@ -1,44 +1,61 @@
 { pkgs, pkgs-unstable, ... }:
 
 {
-  import = [
+  imports = [
     ./common-cli.nix
     ./common-gui.nix
-    ./servarr.nix
     ./gaming.nix
-    ./webdav.nix
   ];
   environment.systemPackages = with pkgs; [
-    davinici-resolve
-    universal-android-debloater
+    # davinci-resolve
+    # universal-android-debloater
   ];
   programs.adb.enable = true;
-  networking.hostName = "gigabyte-a620i";
+  networking = {
+    hostName = "gigabyte-a620i";
+  };
+  programs.virt-manager.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu.package = pkgs.qemu_kvm;
+  };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/68af7dc9-4720-4415-b887-7dac8569098e";
+    device = "/dev/nvme0n1p5";
     fsType = "ext4";
   };
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/A330-3A4C";
+    device = "/dev/nvme0n1p1";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
-  fileSystems."/mnt/shared" = {
-    device = "/dev/disk/by-uuid/6F2C1A2F1CE36C91";
-    fsType = "ntfs-3g";
-    options = [ "rw" "uid=1000" ];
+  fileSystems."/home/kdebre/Games" = {
+    device = "/dev/nvme0n1p6";
+    fsType = "btrfs";
+    options = [
+      "subvol=Games"
+    ];
   };
 
   boot = {
     kernelModules = [ "kvm-amd" ];
-    supportedFilesystems = [ "ntfs" ];
+    supportedFilesystems = [ ];
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        # windows."11" = {
+        #   title = "Windows 11";
+        #   sortKey = "m_windows";
+        #   efiDeviceHandle = "HD0b1";
+        # };
+        # edk2-uefi-shell.enable = true;
+      };
       efi.canTouchEfiVariables = true;
-      timeout = null;
+      timeout = 30;
     };
-    kernelParams = [ "amdgpu.ppfeaturemask=0xffffffff" ];
   };
 
   system.stateVersion = "24.05";

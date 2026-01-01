@@ -1,6 +1,11 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
-  imports = [ ./common-cli.nix ./common-gui.nix ./workstation.nix ];
+  imports = [
+    ./common-cli.nix
+    ./common-gui.nix
+    ./workstation.nix
+    ./gaming.nix
+  ];
 
 }

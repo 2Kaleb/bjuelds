@@ -1,7 +1,11 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-
   services.getty.autologinUser = lib.mkForce "kdebre";
   services.openssh = {
     enable = true;
@@ -34,13 +38,23 @@
     isNormalUser = true;
     description = "kdebre";
     shell = pkgs.fish;
-    extraGroups =
-      [ "networkmanager" "wheel" "libvirtd" "seat" "podman" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "libvirtd"
+      "seat"
+      "podman"
+      "docker"
+      "media"
+    ];
   };
 
   programs.fish.enable = true;
   nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   nix.settings.auto-optimise-store = true;
   virtualisation.docker.enable = true;
   virtualisation.podman.enable = true;

@@ -1,33 +1,23 @@
-{ pkgs, lib, ... }: {
+{ pkgs, pkgs-unstable, ... }:
+{
 
-  environment.systemPackages = with pkgs; [ brightnessctl ];
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
   services.blueman.enable = true;
   services.seatd.enable = true;
   security.pam.services.swaylock = { };
   services.gvfs.enable = true;
   security.polkit.enable = true;
-  security.soteria.enable = true;
-  # services.seahorse.enable = true;
-  # services.gnome-keyring.enable = true;
+  security.soteria.enable = true; # polkit agent for wayland
   services.pipewire = {
     enable = true;
-    # alsa.enable = true;
-    # audio.enable = true;
     wireplumber.enable = true;
   };
   services.dbus.implementation = "broker";
 
   networking.networkmanager.enable = true;
-
-  hardware.graphics.enable = true;
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-
-  programs.virt-manager.enable = true;
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu.package = pkgs.qemu_kvm;
-  };
 
   xdg.terminal-exec = {
     enable = true;
@@ -55,14 +45,9 @@
       addons = with pkgs; [
         rime-data
         fcitx5-gtk # alternatively, kdePackages.fcitx5-qt
-        # fcitx5-chinese-addons  # table input method support
-        # fcitx5-nord            # a color theme
         fcitx5-rime
         fcitx5-m17n
       ];
     };
   };
-
-  programs.kdeconnect.enable = true;
-  programs.gnome-disks.enable = true;
 }

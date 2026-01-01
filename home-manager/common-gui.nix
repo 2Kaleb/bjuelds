@@ -1,28 +1,28 @@
-{ pkgs, pkgs-unstable, ... }: {
+{ pkgs, pkgs-unstable, ... }:
+{
 
   home.packages = with pkgs; [
+    brightnessctl
     slurp
     grim
     wl-clipboard
-    nemo
-    kdePackages.ark
     wlr-randr
-    qimgv
-    networkmanagerapplet
-    isd
-    d-spy
-    mission-center
-    thunderbird
-    seahorse
-    catppuccin-cursors.latteDark
-    piper
     wofi-emoji
     pwvucontrol
     qpwgraph
-    jellyfin-media-player
+    catppuccin-cursors.latteDark
+    nemo
+    kdePackages.ark
+    gnome-disk-utility
+    baobab
+    networkmanagerapplet
+    seahorse
+    qimgv
     anki-bin
-    swayidle
-    ladybird
+    pkgs-unstable.jellyfin-desktop
+    jellyfin-rpc
+    thunderbird
+    ungoogled-chromium
   ];
 
   wayland.windowManager = {
@@ -47,14 +47,10 @@
         autostart = {
           autostart_wf_shell = false;
           wf_background = "wf-background";
-          # portal ="systemctl start --user xdg-desktop-portal-wlr.service;systemctl start --user xdg-desktop-portal-gtk.service;";
-          # polkit = "systemctl --user start polkit-soteria.service";
-          # fumon = "fumon";
-          # uwsm = "uwsm finalize WAYLAND_DISPLAY DISPLAY";
+          dbus_activation = "dbus-update-activation-environment --all";
         };
         core = {
-          plugins =
-            "alpha animate autostart command cube expo fast-switcher fisheye foreign-toplevel grid gtk-shell idle invert move oswitch preserve-output place resize scale session-lock shortcuts-inhibit simple-tile switcher vswipe vswitch wayfire-shell window-rules wm-actions wobbly wrot zoom";
+          plugins = "alpha animate autostart command cube expo fast-switcher fisheye foreign-toplevel grid gtk-shell idle invert move oswitch preserve-output place resize scale session-lock shortcuts-inhibit simple-tile switcher vswipe vswitch wayfire-shell window-rules wm-actions wobbly wrot zoom";
           close_top_view = "<super> KEY_C";
         };
         command = {
@@ -63,8 +59,8 @@
           binding_lock = "<super> KEY_X";
           binding_logout = "<super> <shift> KEY_Q";
           binding_reboot = "<super> <shift> KEY_R";
-          binding_screenshot = "<super> KEY_Q";
-          binding_shutdown = "<super> <shift> KEY_S";
+          binding_screenshot = "<super> <shift> KEY_S";
+          binding_poweroff = "<super> <shift> KEY_P";
           binding_terminal = "<super> KEY_ENTER";
           binding_filemanager = "<super> KEY_E";
           binding_emoji = "<super> KEY_DOT";
@@ -74,7 +70,7 @@
           command_logout = "uwsm stop";
           command_reboot = "systemctl reboot";
           command_screenshot = ''grim -g "$(slurp -d)" - | wl-copy'';
-          command_shutdown = "systemctl poweroff";
+          command_poweroff = "systemctl poweroff";
           command_terminal = "foot";
           command_filemanager = "nemo";
           command_emoji = "wofi-emoji";
@@ -122,32 +118,25 @@
       };
     };
   };
-  # home.file.".icons/default".source = "${pkgs.catppuccin-cursors.latteYellow}";
-  # home.pointerCursor = {
-  #   enable = true;
-  #   package = pkgs.catppuccin-cursors.latteYellow;
-  #   gtk.enable = true;
-  #   name = "default";
-  #   dotIcons.enable = true;
-  # };
 
-  programs.foot = let
-    foot-theme = pkgs.fetchurl {
-      url =
-        "https://codeberg.org/dnkl/foot/raw/branch/releases/1.22/themes/kitty";
-      hash = "sha256-V0m8tmR4QFRWe//ltX++ojD5X+x2x3cRHaKWfnL8OH8=";
-    };
-  in {
-    enable = true;
-    server.enable = false;
-    settings = {
-      main = {
-        font = "JetBrainsMonoNFM-Regular:size=14";
-        include = "${foot-theme}";
+  programs.foot =
+    let
+      foot-theme = pkgs.fetchurl {
+        url = "https://codeberg.org/dnkl/foot/raw/branch/releases/1.22/themes/kitty";
+        hash = "sha256-V0m8tmR4QFRWe//ltX++ojD5X+x2x3cRHaKWfnL8OH8=";
       };
-      colors.alpha = 0.5;
+    in
+    {
+      enable = true;
+      server.enable = false;
+      settings = {
+        main = {
+          font = "JetBrainsMonoNFM-Regular:size=14";
+          include = "${foot-theme}";
+        };
+        colors.alpha = 0.5;
+      };
     };
-  };
 
   programs = {
     mangohud = {
@@ -185,7 +174,10 @@
       # };
     };
     fuzzel.enable = true;
-    mpv.enable = true;
+    mpv = {
+      enable = true;
+      config = { };
+    };
     sioyek.enable = true;
     vesktop.enable = true;
     zed-editor = {
@@ -198,28 +190,31 @@
   services = {
     fnott = {
       enable = true;
-      settings = { main = { default-timeout = 10; }; };
+      settings = {
+        main = {
+          default-timeout = 10;
+        };
+      };
     };
-    kdeconnect.enable = true;
+    gnome-keyring = {
+      enable = true;
+      components = [
+        "secrets"
+        "ssh"
+      ];
+    };
     swayidle = {
       enable = true;
-      events = [{
-        event = "before-sleep";
-        command = "${pkgs.swaylock}/bin/swaylock -fF";
-      }
-      # {
-      #   event = "lock";
-      #   command = "lock";
-      # }
-        ];
+      events = [
+        {
+          event = "before-sleep";
+          command = "${pkgs.swaylock}/bin/swaylock -fF";
+        }
+      ];
       timeouts = [
-        # {
-        #   timeout = 300;
-        #   command = "${pkgs.swaylock}/bin/swaylock -fF";
-        # }
         {
           timeout = 1800;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
+          command = "${pkgs.systemd}/bin/systemctl sleep";
         }
       ];
     };
@@ -280,6 +275,23 @@
               }
             ];
           }
+          {
+            name = "gigabyte-a620i";
+            output = [
+              {
+                enable = true;
+                search = [ "m=H27T22C" ];
+                mode = "2560x1440@180Hz";
+                position = "0,0";
+                adaptive_sync = true;
+              }
+              {
+                enable = true;
+                search = [ "n=HDMI-A-1" ];
+                position = "2560,0";
+              }
+            ];
+          }
         ];
       };
     };
@@ -295,30 +307,23 @@
     };
   };
   xdg = {
-    desktopEntries = {
-      "dev.zed.Zed" = {
-        name = "Zed";
-        exec = "mangohud zeditor %U";
-        icon = "zed";
-        mimeType = [ "text/plain" ];
-      };
-    };
     portal = {
       enable = true;
       # xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-wlr
         xdg-desktop-portal-gtk
-        # gnome-keyring
         darkman
+        gnome-keyring
+
       ];
-      # config = { common = { default = [ "wlr" "gnome-keyring" "gtk" ]; }; };
       config = {
-        wlroots = {
+        common = {
           default = [ "gtk" ];
           "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
           "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
           "org.freedesktop.impl.portal.Settings" = [ "darkman" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         };
       };
     };

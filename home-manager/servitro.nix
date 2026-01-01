@@ -1,10 +1,7 @@
-
-
-{ config, pkgs, ... }:
+{ ... }:
 
 {
-  imports =
-    [
+  imports = [
     ./common-cli.nix
-    ];
+  ];
 }
