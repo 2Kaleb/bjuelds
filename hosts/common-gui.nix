@@ -1,10 +1,7 @@
-{ pkgs, pkgs-unstable, ... }:
-{
+{ pkgs, pkgs-unstable, ... }: {
 
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/xdg-desktop-portal"
-  ];
+  environment.pathsToLink =
+    [ "/share/applications" "/share/xdg-desktop-portal" ];
   services.blueman.enable = true;
   services.seatd.enable = true;
   security.pam.services.swaylock = { };
@@ -25,6 +22,9 @@
   };
 
   fonts.packages = with pkgs; [ nerd-fonts.jetbrains-mono ];
+
+  programs.dconf.enable = true; # needed for GTK
+  environment.sessionVariables = { WLR_RENDERER = "vulkan"; };
 
   programs.uwsm = {
     enable = true;
