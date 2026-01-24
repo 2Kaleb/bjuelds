@@ -83,6 +83,8 @@
           xkb_layout = "de";
           scroll_method = "edge";
           natural_scroll = true;
+          disable_touchpad_while_typing = true;
+          disable_touchpad_while_mouse = true;
           mouse_cursor_speed = 1.0;
           touchpad_cursor_speed = 1.0;
           cursor_theme = "catppuccin-latte-dark-cursors";

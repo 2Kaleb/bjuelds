@@ -4,9 +4,6 @@
     opencl.enable = true; # adds    pkgs.rocmPackages.clr pkgs.rocmPackages.clr.icd
     overdrive.enable = true;
   };
-  environment.systemPackages = with pkgs; [ lact ];
-  systemd.packages = with pkgs; [ lact ];
-  systemd.services.lactd.wantedBy = [ "multi-user.target" ];
   programs.corectrl.enable = true;
   # services.hardware.openrgb.enable = true;
   services.sunshine = {
@@ -41,6 +38,7 @@
 
   # services.solaar.enable = true; # https://github.com/pwr-Solaar/Solaar
   services.ratbagd.enable = true;
+  services.lact.enable = true;
 
   # programs.gamemode.enable = true;
   programs.gamescope = {
@@ -59,13 +57,13 @@
       gamescope
       protonplus
     ];
-    package = pkgs.steam.override {
-      extraEnv = {
-        # MANGOHUD = true;
-        # OBS_VKCAPTURE = true;
-        # ENABLE_VKBASALT = true;
-      };
-    };
+    # package = pkgs.steam.override {
+    #   extraEnv = {
+    # MANGOHUD = true;
+    # OBS_VKCAPTURE = true;
+    # ENABLE_VKBASALT = true;
+    # };
+    # };
   };
 
 }

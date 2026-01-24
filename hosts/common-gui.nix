@@ -5,6 +5,7 @@
   services.blueman.enable = true;
   services.seatd.enable = true;
   security.pam.services.swaylock = { };
+  security.rtkit.enable = true;
   services.gvfs.enable = true;
   security.polkit.enable = true;
   security.soteria.enable = true; # polkit agent for wayland
@@ -13,8 +14,6 @@
     wireplumber.enable = true;
   };
   services.dbus.implementation = "broker";
-
-  networking.networkmanager.enable = true;
 
   xdg.terminal-exec = {
     enable = true;
