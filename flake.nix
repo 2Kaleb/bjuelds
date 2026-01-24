@@ -130,6 +130,27 @@
           ];
         };
 
+        mediaserver = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
+            ./hosts/mediaserver.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.kdebre = import ./home-manager/common-cli.nix;
+                extraSpecialArgs = {
+                  pkgs-unstable = import nixpkgs-unstable {
+                    config.allowUnfree = true;
+                    inherit system;
+                  };
+                };
+              };
+            }
+          ];
+        };
+
         # nix build .#nixosConfigurations.exampleIso.config.system.build.isoImage
         custom-iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";

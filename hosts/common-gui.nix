@@ -1,13 +1,11 @@
-{ pkgs, pkgs-unstable, ... }:
-{
+{ pkgs, pkgs-unstable, ... }: {
 
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/xdg-desktop-portal"
-  ];
+  environment.pathsToLink =
+    [ "/share/applications" "/share/xdg-desktop-portal" ];
   services.blueman.enable = true;
   services.seatd.enable = true;
   security.pam.services.swaylock = { };
+  security.rtkit.enable = true;
   services.gvfs.enable = true;
   security.polkit.enable = true;
   security.soteria.enable = true; # polkit agent for wayland
@@ -17,14 +15,15 @@
   };
   services.dbus.implementation = "broker";
 
-  networking.networkmanager.enable = true;
-
   xdg.terminal-exec = {
     enable = true;
     settings.default = [ "foot.desktop" ];
   };
 
   fonts.packages = with pkgs; [ nerd-fonts.jetbrains-mono ];
+
+  programs.dconf.enable = true; # needed for GTK
+  environment.sessionVariables = { WLR_RENDERER = "vulkan"; };
 
   programs.uwsm = {
     enable = true;

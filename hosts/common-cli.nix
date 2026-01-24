@@ -6,6 +6,20 @@
 }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  nix.settings.auto-optimise-store = true;
+  virtualisation.docker.enable = true;
+  virtualisation.podman.enable = true;
+  networking.networkmanager.enable = true;
+  hardware = {
+    enableAllFirmware = true;
+    cpu.amd.updateMicrocode = true;
+    cpu.intel.updateMicrocode = true;
+  };
   services.getty.autologinUser = lib.mkForce "kdebre";
   services.openssh = {
     enable = true;
@@ -15,6 +29,7 @@
     };
   };
   services.tailscale.enable = true;
+  networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Berlin";
 
@@ -33,7 +48,6 @@
   };
 
   console.keyMap = "de";
-
   users.users.kdebre = {
     isNormalUser = true;
     description = "kdebre";
@@ -45,24 +59,8 @@
       "seat"
       "podman"
       "docker"
-      "media"
     ];
   };
 
   programs.fish.enable = true;
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  nix.settings.auto-optimise-store = true;
-  virtualisation.docker.enable = true;
-  virtualisation.podman.enable = true;
-  networking.useDHCP = lib.mkDefault true;
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware = {
-    enableAllFirmware = true;
-    cpu.amd.updateMicrocode = true;
-    cpu.intel.updateMicrocode = true;
-  };
 }

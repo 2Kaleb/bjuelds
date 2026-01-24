@@ -1,16 +1,7 @@
-{
-  config,
-  pkgs,
-  pkgs-unstable,
-  ...
-}:
-{
+{ config, pkgs, pkgs-unstable, ... }: {
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
-  home.packages = with pkgs; [
-    himalaya
-    isd
-  ];
+  home.packages = with pkgs; [ himalaya isd ];
   accounts.email.accounts."tu-darmstadt.de" = {
     address = "kaleb.debre@tu-darmstadt.de";
     realName = "Kaleb Debre";
@@ -102,15 +93,12 @@
       enable = true;
       config.style = "header";
     };
+    eza.enable = true;
     fastfetch = {
       enable = true;
       package = pkgs-unstable.fastfetch;
       settings = {
-        logo = {
-          padding = {
-            top = 2;
-          };
-        };
+        logo = { padding = { top = 2; }; };
         modules = [
           "title"
           "separator"
@@ -119,7 +107,6 @@
           "bios"
           "board"
           "kernel"
-          "initsystem"
           "uptime"
           "processes"
           "packages"
@@ -128,9 +115,9 @@
           "lm"
           "de"
           "wm"
+          "cursor"
           "terminal"
           "terminalfont"
-          "terminaltheme"
           {
             type = "cpu";
             showPeCoreCount = true;
@@ -160,13 +147,13 @@
       enable = true;
       settings = {
         fields = with config.lib.htop.fields; [
-          PID
           USER
           PERCENT_CPU
           M_RESIDENT
-          STARTTIME
           ELAPSED
+          STARTTIME
           COMM
+          PID
         ];
         highlight_base_name = 1;
         color_scheme = 6;
@@ -176,26 +163,17 @@
         show_cpu_temperature = 1;
         sort_key = 39;
         sort_direction = -1;
-      }
-      // (
-        with config.lib.htop;
-        leftMeters [
-          (bar "CPU")
-          (bar "AllCPUs2")
-          (bar "MemorySwap")
-        ]
-      )
-      // (
-        with config.lib.htop;
-        rightMeters [
-          (text "DateTime")
-          (text "Hostname")
-          (text "System")
-          (text "Uptime")
-          (text "DiskIO")
-          (text "NetworkIO")
-        ]
-      );
+      } // (with config.lib.htop;
+        leftMeters [ (bar "CPU") (bar "AllCPUs2") (bar "MemorySwap") ])
+        // (with config.lib.htop;
+          rightMeters [
+            (text "DateTime")
+            (text "Hostname")
+            (text "System")
+            (text "Uptime")
+            (text "DiskIO")
+            (text "NetworkIO")
+          ]);
     };
     lazygit.enable = true;
     tealdeer.enable = true;
@@ -205,7 +183,6 @@
       enable = true;
       enableFishIntegration = true;
     };
-    eza.enable = true;
     fish = {
       enable = true;
       shellAliases = {
@@ -214,8 +191,10 @@
       };
       functions = {
         listpackages = "nix-store --query --requisites /run/current-system";
-        listapplications = "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
-        listbinaries = "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
+        listapplications =
+          "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
+        listbinaries =
+          "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
 
       };
     };

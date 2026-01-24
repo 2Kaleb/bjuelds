@@ -1,5 +1,4 @@
-{ pkgs, pkgs-unstable, ... }:
-{
+{ pkgs, pkgs-unstable, ... }: {
 
   home.packages = with pkgs; [
     brightnessctl
@@ -21,6 +20,7 @@
     anki-bin
     pkgs-unstable.jellyfin-desktop
     jellyfin-rpc
+    zed-discord-presence
     thunderbird
     ungoogled-chromium
   ];
@@ -50,13 +50,15 @@
           dbus_activation = "dbus-update-activation-environment --all";
         };
         core = {
-          plugins = "alpha animate autostart command cube expo fast-switcher fisheye foreign-toplevel grid gtk-shell idle invert move oswitch preserve-output place resize scale session-lock shortcuts-inhibit simple-tile switcher vswipe vswitch wayfire-shell window-rules wm-actions wobbly wrot zoom";
+          plugins =
+            "alpha animate autostart command cube expo fast-switcher fisheye foreign-toplevel grid gtk-shell idle invert move oswitch preserve-output place resize scale session-lock shortcuts-inhibit simple-tile switcher vswipe vswitch wayfire-shell window-rules wm-actions wobbly wrot zoom";
           close_top_view = "<super> KEY_C";
         };
         command = {
           binding_launcher = "<super> KEY_S";
           binding_sleep = "<super> <shift> KEY_X";
           binding_lock = "<super> KEY_X";
+          binding_wallpaper = "<super> KEY_W";
           binding_logout = "<super> <shift> KEY_Q";
           binding_reboot = "<super> <shift> KEY_R";
           binding_screenshot = "<super> <shift> KEY_S";
@@ -74,12 +76,15 @@
           command_terminal = "foot";
           command_filemanager = "nemo";
           command_emoji = "wofi-emoji";
+          command_wallpaper = "wf-background";
         };
         expo.toggle = "<super>";
         input = {
           xkb_layout = "de";
           scroll_method = "edge";
           natural_scroll = true;
+          disable_touchpad_while_typing = true;
+          disable_touchpad_while_mouse = true;
           mouse_cursor_speed = 1.0;
           touchpad_cursor_speed = 1.0;
           cursor_theme = "catppuccin-latte-dark-cursors";
@@ -119,24 +124,23 @@
     };
   };
 
-  programs.foot =
-    let
-      foot-theme = pkgs.fetchurl {
-        url = "https://codeberg.org/dnkl/foot/raw/branch/releases/1.22/themes/kitty";
-        hash = "sha256-V0m8tmR4QFRWe//ltX++ojD5X+x2x3cRHaKWfnL8OH8=";
-      };
-    in
-    {
-      enable = true;
-      server.enable = false;
-      settings = {
-        main = {
-          font = "JetBrainsMonoNFM-Regular:size=14";
-          include = "${foot-theme}";
-        };
-        colors.alpha = 0.5;
-      };
+  programs.foot = let
+    foot-theme = pkgs.fetchurl {
+      url =
+        "https://codeberg.org/dnkl/foot/raw/branch/releases/1.22/themes/kitty";
+      hash = "sha256-V0m8tmR4QFRWe//ltX++ojD5X+x2x3cRHaKWfnL8OH8=";
     };
+  in {
+    enable = true;
+    server.enable = false;
+    settings = {
+      main = {
+        font = "JetBrainsMonoNFM-Regular:size=10";
+        include = "${foot-theme}";
+      };
+      colors.alpha = 0.5;
+    };
+  };
 
   programs = {
     mangohud = {
@@ -164,13 +168,20 @@
       };
     };
     # thunderbird.enable=true;
-    swaylock.enable = true;
+    swaylock = {
+      enable = true;
+      settings = {
+        color = "000000";
+        daemonize = true;
+      };
+    };
     librewolf = {
       enable = true;
       # settings = {
       #   "pdfjs.spreadModeOnLoad" = true;
       #   "browser.sessionstore.resume_from_crash" = false;
       #   "browser.bookmarks.openInTabClosesMenu" = false;
+      #   "xpinstall.signatures.required" = false;
       # };
     };
     fuzzel.enable = true;
@@ -190,111 +201,25 @@
   services = {
     fnott = {
       enable = true;
-      settings = {
-        main = {
-          default-timeout = 10;
-        };
-      };
+      settings = { main = { default-timeout = 10; }; };
     };
     gnome-keyring = {
       enable = true;
-      components = [
-        "secrets"
-        "ssh"
-      ];
+      components = [ "secrets" "ssh" ];
     };
     swayidle = {
       enable = true;
-      events = [
-        {
-          event = "before-sleep";
-          command = "${pkgs.swaylock}/bin/swaylock -fF";
-        }
-      ];
-      timeouts = [
-        {
-          timeout = 1800;
-          command = "${pkgs.systemd}/bin/systemctl sleep";
-        }
-      ];
+      # events = [{
+      #   event = "before-sleep";
+      #
+      # }];
+      timeouts = [{
+        timeout = 600;
+        command = "swaylock";
+        # command = "${pkgs.systemd}/bin/systemctl sleep";
+      }];
     };
-    shikane = {
-      enable = true;
-      settings = {
-        profile = [
-          {
-            name = "workstation";
-            output = [
-              {
-                enable = true;
-                search = [
-                  "n=HDMI-A-2"
-                  "m=EV2456"
-                ]; # , v=Eizo Nanao Corporation, s=0x03B60B34";
-                position = "0,0";
-              }
-              {
-                enable = true;
-                search = [
-                  "n=HDMI-A-1"
-                  "m=LEN LT2452pwC"
-                ]; # , v=Lenovo Group Limited,  s=VN-669632";
-                position = "1920,0";
-              }
-            ];
-          }
-          {
-            name = "laptop";
-            output = [
-              {
-                enable = true;
-                search = "n=eDP-1";
-                position = "0,0";
-              }
-              {
-                enable = true;
-                search = [ "n=HDMI-A-1" ];
-                position = "900,-1080";
-              }
-            ];
-          }
-          {
-            name = "asrock-b850i";
-            output = [
-              {
-                enable = true;
-                search = [ "m=XF240YU" ];
-                mode = "2560x1440@143.856003Hz";
-                position = "0,0";
-                adaptive_sync = true;
-              }
-              {
-                enable = true;
-                search = [ "n=HDMI-A-2" ];
-                position = "2560,0";
-              }
-            ];
-          }
-          {
-            name = "gigabyte-a620i";
-            output = [
-              {
-                enable = true;
-                search = [ "m=H27T22C" ];
-                mode = "2560x1440@180Hz";
-                position = "0,0";
-                adaptive_sync = true;
-              }
-              {
-                enable = true;
-                search = [ "n=HDMI-A-1" ];
-                position = "2560,0";
-              }
-            ];
-          }
-        ];
-      };
-    };
+    shikane.enable = true;
   };
   gtk = {
     enable = true;
@@ -323,7 +248,7 @@
           "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
           "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
           "org.freedesktop.impl.portal.Settings" = [ "darkman" ];
-          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          # "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         };
       };
     };
