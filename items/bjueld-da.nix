@@ -1,12 +1,18 @@
 { pkgs, ... }:
 
 {
-  imports =
-    [ ./common-cli.nix ./common-gui.nix ./workstation.nix ./gaming.nix ];
+  imports = [
+    ./common-cli.nix
+    ./common-gui.nix
+    ./workstation.nix
+    ./gaming.nix
+  ];
+
+  home.packages = with pkgs; [ naps2 ];
 
   services.shikane.settings.profile = [
     {
-      name = "asrock-b850i";
+      name = "bjueld-of";
       output = [
         {
           enable = true;
@@ -17,13 +23,13 @@
         }
         {
           enable = true;
-          search = [ "n=HDMI-A-2" ];
+          search = [ "m=HP E202" ];
           position = "2560,0";
         }
       ];
     }
     {
-      name = "gigabyte-a620i";
+      name = "bjueld-da";
       output = [
         {
           enable = true;
