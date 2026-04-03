@@ -1,66 +1,62 @@
-{ config, pkgs, pkgs-unstable, ... }: {
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
+{
   home.username = "kdebre";
   home.homeDirectory = "/home/kdebre";
-  home.packages = with pkgs; [ himalaya isd ];
+  home.packages = with pkgs; [
+    himalaya
+    isd
+    ncdu
+    # dua
+    # duf
+    # gdu
+    # dust
+    clock-rs
+    wego
+  ];
   accounts.email.accounts."tu-darmstadt.de" = {
+    primary = true;
     address = "kaleb.debre@tu-darmstadt.de";
     realName = "Kaleb Debre";
     userName = "kt91koru";
-    # signature.command = /home/kdebre/repos/dotfiles/Signatur_Arbeit.html;
-    primary = true;
     imap = {
       host = "mail.tu-darmstadt.de";
       port = 993;
-      # authentication = "plain";
       tls.enable = true;
     };
     smtp = {
       host = "smtp.tu-darmstadt.de";
       port = 465;
-      # authentication = "plain";
       tls.enable = true;
     };
+    # signature.command = /home/kdebre/repos/dotfiles/Signatur_Arbeit.html;
     thunderbird.enable = true;
     himalaya.enable = true;
-    # himalaya.settings = {
-    #   default = true;
-    #   display-name = "tu-darmstadt";
-    #   email = "kaleb.debre@tu-darmstadt.de";
-    #   downloads-dir = "/home/kdebre/Downloads";
+    himalaya.settings = {
+      default = true;
+      email = "kaleb.debre@tu-darmstadt.de";
+      display-name = "Kaleb Debre";
 
-    #   backend = {
-    #     type = "imap";
-    #     host = "mail.tu-darmstadt.de";
-    #     port = 993;
-    #     login = "kt91koru";
-    #     encryption = {
-    #       type = "tls";
-    #     };
-    #     auth = {
-    #       type = "password";
-    #       cmd = "pass show tu-darmstadt";
-    #     };
-    #   };
+      backend.type = "imap";
+      backend.host = "mail.tu-darmstadt.de";
+      backend.port = 993;
+      backend.login = "kt91koru";
+      backend.encryption.type = "tls";
+      backend.auth.type = "password";
+      backend.auth.keyring = "tu-darmstadt";
 
-    #   message = {
-    #     send = {
-    #       backend = {
-    #         type = "smtp";
-    #         host = "smtp.tu-darmstadt.de";
-    #         port = 465;
-    #         login = "kt91koru";
-    #         encryption = {
-    #           type = "tls";
-    #         };
-    #         auth = {
-    #           type = "password";
-    #           cmd = "pass show tu-darmstadt";
-    #         };
-    #       };
-    #     };
-    #   };
-    # };
-
+      message.send.backend.type = "smtp";
+      message.send.backend.host = "smtp.tu-darmstadt.de";
+      message.send.backend.port = 465;
+      message.send.backend.login = "kt91koru";
+      message.send.backend.encryption.type = "tls";
+      message.send.backend.auth.type = "password";
+      message.send.backend.auth.keyring = "tu-darmstadt";
+    };
   };
 
   programs = {
@@ -69,9 +65,12 @@
     git = {
       enable = true;
       package = pkgs.gitMinimal;
-      settings.user = {
-        email = "kalebdebre@web.de";
-        name = "Kaleb Debre";
+      settings = {
+        pull.rebase = true;
+        user = {
+          email = "kalebdebre@web.de";
+          name = "Kaleb Debre";
+        };
       };
     };
     neovim = {
@@ -79,26 +78,26 @@
       defaultEditor = true;
       extraPackages = with pkgs; [
         nil
-        nixfmt-rfc-style
+        nixfmt
+        lua-language-server
+        stylua
         nodejs-slim
-        cargo
-        gcc
-        gnumake
         ripgrep
-        wget
-        unzip
       ];
     };
     bat = {
       enable = true;
       config.style = "header";
     };
-    eza.enable = true;
     fastfetch = {
       enable = true;
       package = pkgs-unstable.fastfetch;
       settings = {
-        logo = { padding = { top = 2; }; };
+        logo = {
+          padding = {
+            top = 2;
+          };
+        };
         modules = [
           "title"
           "separator"
@@ -108,7 +107,6 @@
           "board"
           "kernel"
           "uptime"
-          "processes"
           "packages"
           "shell"
           "display"
@@ -150,10 +148,9 @@
           USER
           PERCENT_CPU
           M_RESIDENT
-          ELAPSED
           STARTTIME
+          ELAPSED
           COMM
-          PID
         ];
         highlight_base_name = 1;
         color_scheme = 6;
@@ -163,17 +160,26 @@
         show_cpu_temperature = 1;
         sort_key = 39;
         sort_direction = -1;
-      } // (with config.lib.htop;
-        leftMeters [ (bar "CPU") (bar "AllCPUs2") (bar "MemorySwap") ])
-        // (with config.lib.htop;
-          rightMeters [
-            (text "DateTime")
-            (text "Hostname")
-            (text "System")
-            (text "Uptime")
-            (text "DiskIO")
-            (text "NetworkIO")
-          ]);
+      }
+      // (
+        with config.lib.htop;
+        leftMeters [
+          (bar "CPU")
+          (bar "AllCPUs2")
+          (bar "MemorySwap")
+        ]
+      )
+      // (
+        with config.lib.htop;
+        rightMeters [
+          (text "DateTime")
+          (text "Hostname")
+          (text "System")
+          (text "Uptime")
+          (text "DiskIO")
+          (text "NetworkIO")
+        ]
+      );
     };
     lazygit.enable = true;
     tealdeer.enable = true;
@@ -183,6 +189,7 @@
       enable = true;
       enableFishIntegration = true;
     };
+    eza.enable = true;
     fish = {
       enable = true;
       shellAliases = {
@@ -191,10 +198,8 @@
       };
       functions = {
         listpackages = "nix-store --query --requisites /run/current-system";
-        listapplications =
-          "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
-        listbinaries =
-          "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
+        listapplications = "echo '/etc/profiles/per-user/kdebre/share:/run/current-system/sw/share' | tr ':' '\\n' | sort | uniq | xargs -I {} find {} -name '*.desktop'";
+        listbinaries = "ls -1 /etc/profiles/per-user/kdebre/bin /run/current-system/sw/bin | sort | uniq";
 
       };
     };

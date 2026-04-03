@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -11,25 +10,44 @@
     "nix-command"
     "flakes"
   ];
-  nix.settings.auto-optimise-store = true;
+  boot = {
+  kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot = {
+        enable = true;
+        edk2-uefi-shell.enable = true;
+      };
+      efi.canTouchEfiVariables = true;
+      timeout = 30;
+    };
+  };
   virtualisation.docker.enable = true;
   virtualisation.podman.enable = true;
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    plugins = with pkgs; [
+      networkmanager-openconnect
+    ];
+  };
   hardware = {
     enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     cpu.intel.updateMicrocode = true;
   };
+  services.fwupd.enable=true;
+  services.udisks2.enable=true;
   services.getty.autologinUser = lib.mkForce "kdebre";
   services.openssh = {
     enable = true;
     settings = {
       PasswordAuthentication = false;
-      X11Forwarding = true;
     };
   };
-  services.tailscale.enable = true;
-  networking.networkmanager.enable = true;
+  services.davfs2.enable = true;
+  services.tailscale = {
+    enable = true;
+    useRoutingFeatures = "client";
+  };
 
   time.timeZone = "Europe/Berlin";
 
@@ -55,10 +73,9 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "libvirtd"
-      "seat"
       "podman"
       "docker"
+      "davfs2"
     ];
   };
 

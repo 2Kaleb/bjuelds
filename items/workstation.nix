@@ -1,8 +1,38 @@
 { pkgs, pkgs-unstable, ... }:
 
 {
-  imports = [ ./common-cli.nix ./common-gui.nix ];
+  imports = [
+    ./common-cli.nix
+    ./common-gui.nix
+  ];
 
+  home.packages = with pkgs; [
+    pdfsam-basic
+    pkgs-unstable.zotero
+    pkgs-unstable.zoom-us
+    gimp
+    libreoffice
+    onlyoffice-desktopeditors
+    xournalpp
+    rnote
+    # github-desktop
+    # miktex
+    # texstudio
+    obsidian
+    pympress
+    typst
+  ];
+
+  # home.sessionVariables = {
+  #   WLR_RENDERER = "vulkan";
+  #   # MANGOHUD = 1;
+  # };
+  # wayland.windowManager.wayfire.settings = {
+  #   "output:HDMI-A-1".icc_profile =
+  #     /home/kdebre/.color/icc/sRGBColorSpaceProfile.icm;
+  #   "output:HDMI-A-2".icc_profile =
+  #     /home/kdebre/.color/icc/sRGBColorSpaceProfile.icm;
+  # };
   services.shikane.settings.profile = [
     {
       name = "workstation";
@@ -40,23 +70,5 @@
         }
       ];
     }
-  ];
-
-  home.packages = with pkgs; [
-    pdfsam-basic
-    zotero
-    pkgs-unstable.zoom-us
-    gimp
-    libreoffice
-    onlyoffice-desktopeditors
-    xournalpp
-    rnote
-    github-desktop
-    miktex
-    texstudio
-    obsidian
-    pwvucontrol
-    wasistlos
-    pympress
   ];
 }

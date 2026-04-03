@@ -6,7 +6,7 @@
 
   services.shikane.settings.profile = [
     {
-      name = "asrock-b850i";
+      name = "bjueld-of";
       output = [
         {
           enable = true;
@@ -23,7 +23,7 @@
       ];
     }
     {
-      name = "gigabyte-a620i";
+      name = "bjueld-da";
       output = [
         {
           enable = true;

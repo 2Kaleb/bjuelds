@@ -28,10 +28,26 @@
       disko,
       copyparty,
     }:
+    let
+      system = "aarch64-linux";
+      pkgs = import nixpkgs { inherit system; };
+      pkgs-unstable = import nixpkgs-unstable { inherit system; };
+    in
     {
+      homeConfigurations = {
+        "kdebre" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          extraSpecialArgs = {
+            inherit pkgs-unstable;
+          };
+          modules = [
+            ./items/google-trogdor.nix
+          ];
+        };
+      };
       nixosConfigurations = {
 
-        gigabyte-a620i = nixpkgs.lib.nixosSystem rec {
+        bjueld-da = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           specialArgs = {
             pkgs-unstable = import nixpkgs-unstable {
@@ -40,13 +56,13 @@
             };
           };
           modules = [
-            ./hosts/gigabyte-a620i.nix
+            ./bjuelds/bjueld-da.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.kdebre = import ./home-manager/gigabyte-a620i.nix;
+                users.kdebre = import ./items/bjueld-da.nix;
                 extraSpecialArgs = {
                   pkgs-unstable = import nixpkgs-unstable {
                     config.allowUnfree = true;
@@ -58,7 +74,7 @@
           ];
         };
 
-        asrock-b850i = nixpkgs.lib.nixosSystem rec {
+        bjueld-of = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           specialArgs = {
             pkgs-unstable = import nixpkgs-unstable {
@@ -67,13 +83,13 @@
             };
           };
           modules = [
-            ./hosts/asrock-b850i.nix
+            ./bjuelds/bjueld-of.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.kdebre = import ./home-manager/gigabyte-a620i.nix;
+                users.kdebre = import ./items/bjueld-da.nix;
                 extraSpecialArgs = {
                   pkgs-unstable = import nixpkgs-unstable {
                     config.allowUnfree = true;
@@ -88,13 +104,13 @@
         workstation = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
-            ./hosts/workstation.nix
+            ./bjuelds/workstation.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.kdebre = import ./home-manager/workstation.nix;
+                users.kdebre = import ./items/workstation.nix;
                 extraSpecialArgs = {
                   pkgs-unstable = import nixpkgs-unstable {
                     config.allowUnfree = true;
@@ -106,11 +122,20 @@
           ];
         };
 
-        servitro = nixpkgs.lib.nixosSystem rec {
+        vps = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
+          specialArgs = {
+            pkgs-unstable = import nixpkgs-unstable {
+              # package set (nix attrset), not a path
+              config.allowUnfree = true;
+              inherit system;
+            };
+          };
           modules = [
+            ./bjuelds/vps.nix
             disko.nixosModules.disko
-            ./hosts/servitro.nix
+            # "${nixpkgs-unstable}/nixos/modules/services/misc/shoko.nix"
+            # nixpkgs-unstable.nixosModules.services.misc.shoko
             home-manager.nixosModules.home-manager
             copyparty.nixosModules.default
             {
@@ -118,7 +143,7 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.kdebre = import ./home-manager/common-cli.nix;
+                users.kdebre = import ./items/common-cli.nix;
                 extraSpecialArgs = {
                   pkgs-unstable = import nixpkgs-unstable {
                     config.allowUnfree = true;
@@ -130,16 +155,23 @@
           ];
         };
 
-        mediaserver = nixpkgs.lib.nixosSystem rec {
+        htpc = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
+          specialArgs = {
+            pkgs-unstable = import nixpkgs-unstable {
+              config.allowUnfree = true;
+              inherit system;
+            };
+          };
           modules = [
-            ./hosts/mediaserver.nix
+            ./bjuelds/htpc.nix
+            "${nixpkgs-unstable}/nixos/modules/services/misc/shoko.nix"
             home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.kdebre = import ./home-manager/common-cli.nix;
+                users.kdebre = import ./items/common-cli.nix;
                 extraSpecialArgs = {
                   pkgs-unstable = import nixpkgs-unstable {
                     config.allowUnfree = true;
@@ -155,12 +187,12 @@
         custom-iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            ./hosts/custom-iso.nix
+            ./bjuelds/custom-iso.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.kdebre = import ./home-manager/custom-iso.nix;
+              home-manager.users.kdebre = import ./items/custom-iso.nix;
             }
           ];
         };

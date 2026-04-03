@@ -2,14 +2,23 @@
 {
   hardware.amdgpu = {
     opencl.enable = true; # adds    pkgs.rocmPackages.clr pkgs.rocmPackages.clr.icd
-    overdrive.enable = true;
+    overdrive = {
+      enable = true;
+      ppfeaturemask = "0xffffffff";
+    };
   };
+  services.lact.enable = true;
   programs.corectrl.enable = true;
   # services.hardware.openrgb.enable = true;
   services.sunshine = {
     enable = true;
     openFirewall = true;
     capSysAdmin = true;
+    settings = {
+      system_tray = false;
+      capture = "wlr";
+      encoder = "vaapi";
+    };
     applications = {
       apps = [
         # {
@@ -38,9 +47,8 @@
 
   # services.solaar.enable = true; # https://github.com/pwr-Solaar/Solaar
   services.ratbagd.enable = true;
-  services.lact.enable = true;
 
-  # programs.gamemode.enable = true;
+  programs.gamemode.enable = true;
   programs.gamescope = {
     enable = true;
     capSysNice = true;
@@ -56,6 +64,8 @@
     extraPackages = with pkgs; [
       gamescope
       protonplus
+      lsfg-vk
+      lsfg-vk-ui
     ];
     # package = pkgs.steam.override {
     #   extraEnv = {

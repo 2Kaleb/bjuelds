@@ -1,11 +1,10 @@
-{ pkgs, pkgs-unstable, ... }: {
+{ pkgs, ... }:
+{
 
   environment.pathsToLink =
     [ "/share/applications" "/share/xdg-desktop-portal" ];
-  services.blueman.enable = true;
   services.seatd.enable = true;
   security.pam.services.swaylock = { };
-  security.rtkit.enable = true;
   services.gvfs.enable = true;
   security.polkit.enable = true;
   security.soteria.enable = true; # polkit agent for wayland
@@ -20,11 +19,16 @@
     settings.default = [ "foot.desktop" ];
   };
 
-  fonts.packages = with pkgs; [ nerd-fonts.jetbrains-mono ];
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+  ];
 
   programs.dconf.enable = true; # needed for GTK
-  environment.sessionVariables = { WLR_RENDERER = "vulkan"; };
 
+  users.users.kdebre.extraGroups = [ "seat" ];
   programs.uwsm = {
     enable = true;
     waylandCompositors = {
